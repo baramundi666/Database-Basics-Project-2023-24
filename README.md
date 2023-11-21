@@ -1,8 +1,8 @@
 # PBD_projekt
 
-'''
-Baza danych 1: username: u_makrol passward: mqiErccEJNuP
-'''
+
+Baza danych 1: username: u_makrol password: mqiErccEJNuP
+
 
 Praca analogiczna do oolab - każde zajęcia osobny branch, potem merge przez pull request do main.
 Commit i push zmian na bieżąco.
