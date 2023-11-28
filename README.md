@@ -21,6 +21,8 @@ każdy ma indywidualną baze, najlepiej żeby to był wspólny zasób, jedna gł
 można albo zrobić jedno hasło do 3
 albo nadać sobie wzajemnie uprawnienia właścicielskie - po zalogowaniu na swoje konto będą mieli dostęp do 
 bazy danej danego użytkownika
+
+https://my.vertabelo.com/public-model-view/2IWG6ZM00wNdI9OMWmhgAwXxVrQnbYV4krqa0LLZBEdGc6mApBXSSF1aOJSK09H8?x=3822&y=4069&zoom=0.577
 każdy odpowiada za każdą linijkę kodu i dokumentacji - jak jeden napisze kod to dwóch robi code review
 
 w Receiver jest prowadzący trzeba zaznaczyć Marcjana
