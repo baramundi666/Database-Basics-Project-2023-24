@@ -1,3 +1,6 @@
+Król Mateusz 
+Zieliński Filip 
+Wietrzny Wojciech
 # RAPORT PROJEKTU Z PODSTAW BAZ DANYCH 23/24
 ## System bazy danych firmy oferującej usługi naukowe
 ## Spis treści
@@ -13,7 +16,7 @@
 
 
 ## 1.	Opis systemu <a name="opis"></a>
-Firma oferuje różnorakie usługi naukowe w postaci kursów, webinarów oraz umożliwia zapis na studia. Zajęcia przeprowadzane są w formie stacjonarnej, online bądź hybrydowej, zależnie od typu usługi.
+Firma oferuje różnorakie usługi uczelniane w postaci kursów, webinarów oraz umożliwia zapis na studia. Zajęcia przeprowadzane są w formie stacjonarnej, online bądź hybrydowej, zależnie od typu usługi.
 
 Klient może zakupić równolegle dostęp do wielu usług lub uzyskać dostęp do darmowych spotkań i nagrań.
 
@@ -35,7 +38,7 @@ System zawiera informacje o założonych kontach, wykupionych usługach, statusa
 - Zakup nagrań świadczonych usług
 - Odebranie dyplomu po zakończonym cyklu zajęć
 - Wyświetlanie zajęć kolidujących ze sobą
-### 2.2.	Pracownicy <a name="pracownicy"></a>
+### 2.2. Pracownicy <a name="pracownicy"></a>
 - Założenie konta i logowanie się do niego każdorazowo
 - Dostęp do:
     - Podstawowych informacji na temat stanu systemu
@@ -57,4 +60,4 @@ System zawiera informacje o założonych kontach, wykupionych usługach, statusa
 - Zatwierdzanie wyjątków dotyczących odroczenia płatności
 ## 3.	Diagram Bazy Danych <a name="diagram"></a>
  
-![diagramphoto](image.png)
+![diagramphoto](PBD_Projekt-2023-12-11_23-25-1-1.png)
