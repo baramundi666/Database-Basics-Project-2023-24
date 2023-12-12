@@ -60,7 +60,7 @@ System zawiera informacje o założonych kontach, wykupionych usługach, statusa
 - Zatwierdzanie wyjątków dotyczących odroczenia płatności
 ## 3.    Diagram Bazy Danych <a name="diagram"></a>
  
-![diagramphoto](PBD_Projekt-2023-12-11_23-25-1-1.png)
+![diagramphoto](https://github.com/baramundi666/PBD_projekt/assets/128089906/741aeddb-0e93-47d3-be98-f4f0da8c26bd)
 
 ## 4.    Realizowane tabele
 ### 4.1    Customers
@@ -86,6 +86,7 @@ System zawiera informacje o założonych kontach, wykupionych usługach, statusa
 ###### 4.3.3.3.1  Internships_passed
 ##### 4.3.3.4   Sylalabus
 ###### 4.3.3.4.1    Subjects
+
 
 
 
