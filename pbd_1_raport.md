@@ -58,6 +58,34 @@ System zawiera informacje o założonych kontach, wykupionych usługach, statusa
 - Dodawanie tłumacza na wydarzenia
 #### 2.2.3.	Dyrektor Szkoły <a name="dyro"></a>
 - Zatwierdzanie wyjątków dotyczących odroczenia płatności
-## 3.	Diagram Bazy Danych <a name="diagram"></a>
+## 3.    Diagram Bazy Danych <a name="diagram"></a>
  
 ![diagramphoto](PBD_Projekt-2023-12-11_23-25-1-1.png)
+
+## 4.    Realizowane tabele
+### 4.1    Customers
+### 4.2    Orders
+### 4.2.1    OrderDetails
+### 4.3    Services
+#### 4.3.1 Courses
+##### 4.3.1.1    Modules
+##### 4.3.1.2    Courses_hist
+##### 4.3.1.3    Courses_attendace
+
+#### 4.3.2    Webinars
+##### 4.3.2.1    Webinars_hist
+#### 4.3.3    Studies 
+##### 4.3.3.1   SingleStudies
+##### 4.3.3.2   Lectures
+###### 4.3.3.2.1   Lecturers
+###### 4.3.3.2.2   Translator
+###### 4.3.3.2.3   Lectures_attendance
+##### 4.3.3.3   Exams
+###### 4.3.3.3.1   Diplomas
+##### 4.3.3.3   Internships
+###### 4.3.3.3.1  Internships_passed
+##### 4.3.3.4   Sylalabus
+###### 4.3.3.4.1    Subjects
+
+
+
