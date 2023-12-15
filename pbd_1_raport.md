@@ -12,6 +12,12 @@ Wietrzny Wojciech
         2. [Pracownicy organizacyjni](#pracownicyorgy)
         3. [Dyrektor Szkoły](#dyro)
 3. [Diagram Bazy Danych](#diagram)
+4. [Realizowane tabele](#tabels)
+    1. [Customers and Purchase](#c&p)
+    2. [Studies](#std)
+    3. [Webinars](#c&p)
+    4. [Kursy](#c&p)
+    5. [Common tables](#ctb)
 
 
 
@@ -62,31 +68,77 @@ System zawiera informacje o założonych kontach, wykupionych usługach, statusa
  
 ![diagramphoto](https://github.com/baramundi666/PBD_projekt/blob/00c7474af3a3d429ade52e72a6febf8702e47176/PBD_Projekt_diagram_15.12.png)
 
-## 4.    Realizowane tabele
-### 4.1    Customers
-### 4.2    Orders
-### 4.2.1    OrderDetails
-### 4.3    Services
-#### 4.3.1 Courses
-##### 4.3.1.1    Modules
-##### 4.3.1.2    Courses_hist
-##### 4.3.1.3    Courses_attendace
-
-#### 4.3.2    Webinars
-##### 4.3.2.1    Webinars_hist
-#### 4.3.3    Studies 
-##### 4.3.3.1   SingleStudies
-##### 4.3.3.2   Lectures
-###### 4.3.3.2.1   Lecturers
-###### 4.3.3.2.2   Translator
-###### 4.3.3.2.3   Lectures_attendance
-##### 4.3.3.3   Exams
-###### 4.3.3.3.1   Diplomas
-##### 4.3.3.3   Internships
-###### 4.3.3.3.1  Internships_passed
-##### 4.3.3.4   Sylalabus
-###### 4.3.3.4.1    Subjects
-
-
+## 4.    Realizowane tabele <a name="tables"></a>
+### 4.1    *Customers and Purchase* <a name="c&p"></a>
+#### 4.1.1    Customers
+- PK: CustomerID
+#### 4.1.2    Orders
+- PK: OrderID
+- FK: CustomerID
+#### 4.1.3    Order_details
+- PK: OrderID, ServiceID
+- FK: OrderID, ServiceID
+#### 4.1.4    Services
+- PK: ServiceID
+&nbsp;
+### 4.2    *Studies* <a name="std"></a>
+#### 4.2.1  Studies
+- PK: ServiceID
+- FK: ServiceID, SyllabusID
+#### 4.2.2  SingleStudies
+- PK: ServiceID
+- FK: ServiceID
+#### 4.2.3  Lectures
+- PK: LectureID
+- FK: ServiceID, LecturerID, TranslatorID
+#### 4.2.4  Lectures_attendance
+- PK: CustomerID, LectureID
+- FK: CustomerID, LectureID
+#### 4.2.5  Exams
+- PK: CustomerID, ServiceID
+- FK: CustomerID, ServiceID
+#### 4.2.6  Diplomas
+- PK: DiplomaID
+- FK: CustomerID, ServiceID
+#### 4.2.7  Internships
+- PK: InternshipID
+- FK: ServiceID
+#### 4.2.8  Internships_passed
+- PK: InternshipID, CustomerID
+- FK: InternshipID, CustomerID
+#### 4.2.9  Syllabus
+- PK: SyllabusID
+- FK: SubjectID
+#### 4.2.10 Subjects
+- PK: SubjectID
+- FK: LecturerID
+&nbsp;
+### 4.3   *Webinars* <a name="web"></a>
+#### 4.3.1   Webinars
+- PK: ServiceID
+- FK: ServiceID
+#### 4.3.2   Webinars_hist
+- PK: ServiceID, LecturerID
+- FK: ServiceID, LecturerID, TranslatorID
+&nbsp;
+### 4.3    *Kursy* <a name="crs"></a>
+#### 4.3.1  Courses
+- PK: ServiceID
+- FK: ServiceID
+#### 4.3.2  Modules
+- PK: ModuleID
+- FK: ServiceID
+#### 4.3.3  Courses_hist
+- PK: ClassID
+- FK: ModuleID, LecturerID, TranslatorID
+#### 4.3.4  Courses_attendace
+- PK: ClassID, CustomerID
+- FK: ClassID, CustomerID
+&nbsp;
+### 4.4 *Common tables* <a name="ctb"></a>
+#### 4.4.1   Lecturers
+- PK: LecturerID
+#### 4.4.2   Translator
+- PK: TranslatorID
 
 
