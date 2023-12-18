@@ -142,8 +142,7 @@ System zawiera informacje o założonych kontach, wykupionych usługach, statusa
 - PK: ServiceID
 - FK: ServiceID
 - Opis: Tabela przechowuje wszystkie realizowane kursy teraz i w przeszłości
-```
-sql
+```sql
 CREATE TABLE Courses (
     ServiceID int  NOT NULL,
     CourseName int  NOT NULL,
