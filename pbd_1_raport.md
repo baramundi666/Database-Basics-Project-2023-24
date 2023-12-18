@@ -72,73 +72,96 @@ System zawiera informacje o założonych kontach, wykupionych usługach, statusa
 ### 4.1    *Customers and Purchase* <a name="c&p"></a>
 #### 4.1.1    Customers
 - PK: CustomerID
+- Opis: Tabela przechowuje informacje na temat klientów firmy/studentów 
 #### 4.1.2    Orders
 - PK: OrderID
 - FK: CustomerID
+- Opis: Tabela przechowuje spis wszystkich przeszłych zamówień, pole *OrderStatus* wskazuje na to, czy zamówienie jest na razie w koszyku, czy zostało już zrealizowane
 #### 4.1.3    Order_details
 - PK: OrderID, ServiceID
 - FK: OrderID, ServiceID
+- Opis: Tabela przechowuje informacje na temat każdego z zamówień z tabeli *Orders*
 #### 4.1.4    Services
 - PK: ServiceID
+- Opis: Tabela przechowuje wszystkie usługi wraz z ceną
 &nbsp;
 ### 4.2    *Studies* <a name="std"></a>
 #### 4.2.1  Studies
 - PK: ServiceID
 - FK: ServiceID, SyllabusID
+- Opis: Tabela przechowuje wszystkie realizowane studia teraz i w przeszłości
 #### 4.2.2  SingleStudies
 - PK: ServiceID
 - FK: ServiceID
+- Opis: Tabela przechowuje możliwe pojedyncze zajęcia studyjne
 #### 4.2.3  Lectures
 - PK: LectureID
 - FK: ServiceID, LecturerID, TranslatorID
+- Opis: Tabela przechowuje wszystkie histoyczne wykłady zajęć studyjnych
 #### 4.2.4  Lectures_attendance
 - PK: CustomerID, LectureID
 - FK: CustomerID, LectureID
+- Opis: Tabela przechowuje listę obecności każdego wykładu
 #### 4.2.5  Exams
 - PK: CustomerID, ServiceID
 - FK: CustomerID, ServiceID
+- Opis: Tabela przechowuje listę egzaminów każdego ze studentów
 #### 4.2.6  Diplomas
 - PK: DiplomaID
 - FK: CustomerID, ServiceID
+- Opis: Tabela przechowuje dyplomy przyznane za ukończenie studiów
 #### 4.2.7  Internships
 - PK: InternshipID
 - FK: ServiceID
+- Opis: Tabela przechowuje praktyki z każdych studiów
 #### 4.2.8  Internships_passed
 - PK: InternshipID, CustomerID
 - FK: InternshipID, CustomerID
+- Opis: Tabela przechowuje informację, czy praktyka została zaliczona przez danego studenta
 #### 4.2.9  Syllabus
 - PK: SyllabusID
 - FK: SubjectID
+- Opis: Tabela przechowuje plan zajęć każdego z kierunków studiów
 #### 4.2.10 Subjects
 - PK: SubjectID
 - FK: LecturerID
+- Opis: Tabela przechowuje informacje na temat każdego z przedmiotów studyjnych
 &nbsp;
 ### 4.3   *Webinars* <a name="web"></a>
 #### 4.3.1   Webinars
 - PK: ServiceID
 - FK: ServiceID
+- Opis: Tabela przechowuje wszystkie webinary
 #### 4.3.2   Webinars_hist
 - PK: ServiceID, LecturerID
 - FK: ServiceID, LecturerID, TranslatorID
+- Opis: Tabela przechowuje informacje na temat każdego z webinarów
 &nbsp;
 ### 4.3    *Kursy* <a name="crs"></a>
 #### 4.3.1  Courses
 - PK: ServiceID
 - FK: ServiceID
+- Opis: Tabela przechowuje wszystkie realizowane kursy teraz i w przeszłości
 #### 4.3.2  Modules
 - PK: ModuleID
 - FK: ServiceID
+- Opis: Tabela przechowuje listę modułów każdego z kursów
 #### 4.3.3  Courses_hist
 - PK: ClassID
 - FK: ModuleID, LecturerID, TranslatorID
+- Opis: Tabela przechowuje informacje o każdym module
 #### 4.3.4  Courses_attendace
 - PK: ClassID, CustomerID
 - FK: ClassID, CustomerID
+- Opis: Tabela przechowuje listę obecności każdego z modułów
 &nbsp;
 ### 4.4 *Common tables* <a name="ctb"></a>
 #### 4.4.1   Lecturers
 - PK: LecturerID
+- Opis: Tabela przechowuje informacje na temat każdego z wykładowców
 #### 4.4.2   Translator
 - PK: TranslatorID
+- Opis: Tabela przechowuje informacje na temat każdego z tłumaczy
+&nbsp;
 
 
