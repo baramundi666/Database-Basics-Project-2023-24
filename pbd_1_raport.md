@@ -30,7 +30,6 @@ System zawiera informacje o założonych kontach, wykupionych usługach, statusa
 
 ## 2.	Funkcje realizowane przez system <a name="funkcje"></a>
 ### 2.1.	Klient firmy <a name="klient"></a>
-- Założenie konta i logowanie się do niego każdorazowo
 - Wyświetlanie oferty usług świadczonych przez firmę
 - Zapisanie się na webinary, kursy, studia lub pojedyncze zajęcia ze studiów
 - Dostęp do:
@@ -45,9 +44,6 @@ System zawiera informacje o założonych kontach, wykupionych usługach, statusa
 - Odebranie dyplomu po zakończonym cyklu zajęć
 - Wyświetlanie zajęć kolidujących ze sobą
 ### 2.2. Pracownicy <a name="pracownicy"></a>
-- Założenie konta i logowanie się do niego każdorazowo
-- Dostęp do:
-    - Podstawowych informacji na temat stanu systemu
 #### 2.2.1.	Wykładowcy <a name="wykladowcy"></a>
 - Dostęp do informacji dotyczących prowadzonych przez niego zajęć
 - Wprowadzanie obecności na zajęciach
@@ -63,7 +59,7 @@ System zawiera informacje o założonych kontach, wykupionych usługach, statusa
     - Bilokacji: lista osób, które są zapisane na co najmniej dwa przyszłe szkolenia, które ze sobą kolidują czasowo
 - Dodawanie tłumacza na wydarzenia
 #### 2.2.3.	Dyrektor Szkoły <a name="dyro"></a>
-- Zatwierdzanie wyjątków dotyczących odroczenia płatności
+- Zatwierdzanie wyjątków dotyczących odroczenia płatności  
 ## 3.    Diagram Bazy Danych <a name="diagram"></a>
  
 ![diagramphoto](https://github.com/baramundi666/PBD_projekt/blob/00c7474af3a3d429ade52e72a6febf8702e47176/PBD_Projekt_diagram_15.12.png)
