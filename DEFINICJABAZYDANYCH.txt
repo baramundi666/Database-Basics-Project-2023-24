@@ -202,7 +202,6 @@ Limit int NULL
 -- Table: Subjects
 CREATE TABLE Subjects (
     SubjectID int  IDENTITY(1,1) PRIMARY KEY,
-    SyllabusID int  NOT NULL,
     LecturerID int  NOT NULL,
     SubjectName varchar(50) CHECK (LEFT(SubjectName, 1) = UPPER(LEFT(SubjectName, 1))) NOT NULL,
     SubjectDescription varchar(200) NOT NULL,
