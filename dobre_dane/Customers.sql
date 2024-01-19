@@ -1,4 +1,3 @@
-
 (1, 'Neil', 'Bartlett', 64401.94, 'donec@hotmail.ca', 'East London', 'Ap #693-3880 Ut Rd.', '48837'),
 (2, 'Allen', 'Aguirre', 25466.02, 'at.velit.cras@icloud.ca', 'Sint-Pieters-Woluwe', '139-3010 Phasellus Rd.', '879381'),
 (3, 'Hayes', 'Berry', 31508.39, 'ut.tincidunt@hotmail.ca', 'Almere', 'Ap #859-568 Augue. Ave', '272240'),

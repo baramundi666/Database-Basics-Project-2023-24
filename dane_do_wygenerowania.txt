@@ -1,17 +1,19 @@
 Customers 1
-Lecturers 0
-Translators 0
+Lecturers 1
+Translators 1
 
 Orders 1
-Languages 0
+Languages 1
 
 Studies 1
-Webinars
-Courses -> Modules
+Webinars 1
+Courses 1 
+-> Modules 1
 
-Exams
-Internships
-Diplomas
+Exams 1
+Internships 1
+Diplomas1
 
-Subjects, Syllabus
+Subjects 1
+Syllabus 1
 

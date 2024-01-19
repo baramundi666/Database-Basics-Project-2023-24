@@ -47,9 +47,7 @@
 (47,'Chaim','Hubbard'),
 (48,'Amir','Santana'),
 (49,'Asher','Barry'),
-(50,'Price','Osborne');
-INSERT INTO [Lecturers] (LecturerID,FirstName,LastName)
-VALUES
+(50,'Price','Osborne'),
 (51,'Brennan','Rose'),
 (52,'Amery','Irwin'),
 (53,'Brynn','Manning'),
@@ -99,9 +97,7 @@ VALUES
 (97,'Kalia','Livingston'),
 (98,'Magee','Dixon'),
 (99,'Luke','Davenport'),
-(100,'Austin','Mcconnell');
-INSERT INTO [Lecturers] (LecturerID,FirstName,LastName)
-VALUES
+(100,'Austin','Mcconnell'),
 (101,'Christen','Vincent'),
 (102,'Griffith','Rodriguez'),
 (103,'Lael','Schneider'),
@@ -151,9 +147,7 @@ VALUES
 (147,'Cedric','Clemons'),
 (148,'Mohammad','Herrera'),
 (149,'Branden','Whitley'),
-(150,'Ciaran','Golden');
-INSERT INTO [Lecturers] (LecturerID,FirstName,LastName)
-VALUES
+(150,'Ciaran','Golden'),
 (151,'Amber','Dixon'),
 (152,'Nelle','Macdonald'),
 (153,'Brenden','Hartman'),
@@ -203,9 +197,7 @@ VALUES
 (197,'Charissa','Meadows'),
 (198,'Indigo','Cabrera'),
 (199,'Silas','Ratliff'),
-(200,'Clark','Cameron');
-INSERT INTO [Lecturers] (LecturerID,FirstName,LastName)
-VALUES
+(200,'Clark','Cameron'),
 (201,'Patrick','Woodward'),
 (202,'Zorita','Buck'),
 (203,'Deborah','Blevins'),
@@ -255,9 +247,7 @@ VALUES
 (247,'Miriam','Lindsay'),
 (248,'Tana','Glenn'),
 (249,'Hyacinth','Trujillo'),
-(250,'Lacey','Montgomery');
-INSERT INTO [Lecturers] (LecturerID,FirstName,LastName)
-VALUES
+(250,'Lacey','Montgomery'),
 (251,'Sydnee','Harris'),
 (252,'Justine','Bailey'),
 (253,'Hanae','Watkins'),

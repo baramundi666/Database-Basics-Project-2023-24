@@ -1,0 +1,10 @@
+(1,'Informatyka 1'),
+(2,'Informatyka 1'),
+(3,'Informatyka 2'),
+(4,'Informatyka 2'),
+(5,'Matematyka'),
+(6,'Matematyka'),
+(7,'Biologia'),
+(8,'Biologia'),
+(9,'Studia Data Science'),
+(10,'Studia Data Science');
