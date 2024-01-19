@@ -1,6 +1,5 @@
-INSERT INTO Customers (CustomerID,FirstName,LastName,Balance,Email,City,Address,PostalCode)
-VALUES
-  (1, 'Neil', 'Bartlett', 64401.94, 'donec@hotmail.ca', 'East London', 'Ap #693-3880 Ut Rd.', '48837'),
+
+(1, 'Neil', 'Bartlett', 64401.94, 'donec@hotmail.ca', 'East London', 'Ap #693-3880 Ut Rd.', '48837'),
 (2, 'Allen', 'Aguirre', 25466.02, 'at.velit.cras@icloud.ca', 'Sint-Pieters-Woluwe', '139-3010 Phasellus Rd.', '879381'),
 (3, 'Hayes', 'Berry', 31508.39, 'ut.tincidunt@hotmail.ca', 'Almere', 'Ap #859-568 Augue. Ave', '272240'),
 (4, 'Vance', 'Hicks', 33227.05, 'sem.nulla@google.couk', 'Caledon', '6011 Diam Avenue', '143678'),
@@ -36,9 +35,7 @@ VALUES
 (34, 'Kasimir', 'Eaton', 55967.07, 'aliquam.rutrum@yahoo.org', 'Tczew', '1433 Nec Road', 'B6M 0P5'),
 (35, 'Ori', 'Morrison', 7617.26, 'mauris.suspendisse@outlook.com', 'Alanya', '230-9337 Magna. Street', '68544'),
 (36, 'Kyla', 'Hull', 35532.69, 'molestie.dapibus.ligula@icloud.net', 'Chortkiv', 'Ap #429-5642 Ut, Avenue', '652912'),
-(37, 'Joseph', 'Casey', 28161.63, 'sagittis.lobortis@yahoo.edu', 'Saintes', '3463 Felis Street', '226087');
-INSERT INTO Customers (CustomerID,FirstName,LastName,Balance,Email,City,Address,PostalCode)
-VALUES
+(37, 'Joseph', 'Casey', 28161.63, 'sagittis.lobortis@yahoo.edu', 'Saintes', '3463 Felis Street', '226087'),
 (38, 'Cheyenne', 'Haynes', 86775.17, 'imperdiet.ornare.in@google.edu', 'Izmail', 'P.O. Box 609, 2606 Auctor Rd.', '392663'),
 (39, 'Griffin', 'Hatfield', 62512.77, 'suspendisse.dui@aol.couk', 'Ospedaletto dAlpinolo', '287-1240 Amet Av.', '05910'),
 (40, 'Isadora', 'Powers', 36363.31, 'sodales.mauris.blandit@icloud.ca', 'Jayapura', 'Ap #861-6368 Quisque Avenue', 'J9A 8T2'),

@@ -1,5 +1,5 @@
 -- Created by Vertabelo (http://vertabelo.com)
--- Last modification date: 2024-01-19 13:20:13.634
+-- Last modification date: 2024-01-19 13:53:25.315
 
 -- tables
 -- Table: Courses
@@ -191,6 +191,7 @@ CREATE TABLE Studies (
 -- Table: Subjects
 CREATE TABLE Subjects (
     SubjectID int  NOT NULL,
+    SyllabusID int  NOT NULL,
     LecturerID int  NOT NULL,
     SubjectName varchar(50)  NOT NULL,
     SubjectDescription varchar(200)  NOT NULL,
@@ -202,9 +203,15 @@ CREATE TABLE Subjects (
 -- Table: Syllabus
 CREATE TABLE Syllabus (
     SyllabusID int  NOT NULL,
-    SubjectID int  NOT NULL,
     SyllabusName varchar(50)  NOT NULL,
     CONSTRAINT Syllabus_pk PRIMARY KEY  (SyllabusID)
+);
+
+-- Table: Syllabus_details
+CREATE TABLE Syllabus_details (
+    SyllabusID int  NOT NULL,
+    SubjectID int  NOT NULL,
+    CONSTRAINT Syllabus_details_pk PRIMARY KEY  (SubjectID,SyllabusID)
 );
 
 -- Table: Translator
@@ -373,10 +380,15 @@ ALTER TABLE Subjects ADD CONSTRAINT Subjects_Lecturers
     FOREIGN KEY (LecturerID)
     REFERENCES Lecturers (LecturerID);
 
--- Reference: Subjects_Syllabus (table: Syllabus)
-ALTER TABLE Syllabus ADD CONSTRAINT Subjects_Syllabus
+-- Reference: Syllabus_details_Subjects (table: Syllabus_details)
+ALTER TABLE Syllabus_details ADD CONSTRAINT Syllabus_details_Subjects
     FOREIGN KEY (SubjectID)
     REFERENCES Subjects (SubjectID);
+
+-- Reference: Syllabus_details_Syllabus (table: Syllabus_details)
+ALTER TABLE Syllabus_details ADD CONSTRAINT Syllabus_details_Syllabus
+    FOREIGN KEY (SyllabusID)
+    REFERENCES Syllabus (SyllabusID);
 
 -- Reference: Translator_details_Languages (table: Translator_details)
 ALTER TABLE Translator_details ADD CONSTRAINT Translator_details_Languages
