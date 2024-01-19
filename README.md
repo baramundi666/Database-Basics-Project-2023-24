@@ -30,3 +30,15 @@ Valid Until - 2024-02-18
 
 Vertabelo - dobre narzędzie do projektowania struktury bazy danych i tworzenia diagramu
 można wygenerować z tego co tam zrobimy skrypt, potem wywołać ten skrypt po podłączeniu do naszej bazy danych
+
+## PODZIAL PRACY
+ - Wojtek:
+    - widoki
+    - funkcje 2.5/4
+ - Filip:
+    - procedury
+    - funkcje 1.5/4
+ - Mateusz:
+    - dane
+    - raport
+    - warunki integralnosci

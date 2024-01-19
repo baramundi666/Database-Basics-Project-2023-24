@@ -23,7 +23,7 @@ Wietrzny Wojciech
 7. [Procedury](#procedury)
 8. [Wygenerowane dane](#wygdane)
 
-
+![diagram](diagram_photo.png)
 
 ## 1.	Opis systemu <a name="opis"></a>
 Firma oferuje różnorakie usługi uczelniane w postaci kursów, webinarów oraz umożliwia zapis na studia. Zajęcia przeprowadzane są w formie stacjonarnej, online bądź hybrydowej, zależnie od typu usługi.
@@ -66,7 +66,7 @@ System zawiera informacje o założonych kontach, wykupionych usługach, statusa
 - Zatwierdzanie wyjątków dotyczących odroczenia płatności  
 ## 3.    Diagram Bazy Danych <a name="diagram"></a>
  
-![diagramphoto](https://github.com/baramundi666/PBD_projekt/blob/00c7474af3a3d429ade52e72a6febf8702e47176/PBD_Projekt_diagram_15.12.png)
+
 
 ## 4.    Realizowane tabele <a name="tables"></a>
 ### 4.1    *Customers and Purchase* <a name="c&p"></a>
