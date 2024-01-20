@@ -1,5 +1,5 @@
 -- Created by Vertabelo (http://vertabelo.com)
--- Last modification date: 2024-01-19 13:53:25.315
+-- Last modification date: 2024-01-20 19:35:25.246
 
 -- tables
 -- Table: Courses
@@ -30,7 +30,8 @@ CREATE TABLE Courses_hist (
     ModuleID int  NOT NULL,
     LecturerID int  NOT NULL,
     TranslatorID int  NOT NULL,
-    Date datetime  NOT NULL,
+    StartDate datetime  NULL,
+    EndDate datetime  NOT NULL,
     Type varchar(20)  NOT NULL,
     LinkNagranie varchar(50)  NULL,
     CONSTRAINT Courses_hist_pk PRIMARY KEY  (ClassID)
@@ -110,7 +111,8 @@ CREATE TABLE Lectures (
     Type varchar(20)  NOT NULL,
     Language varchar(50)  NOT NULL,
     LinkNagranie varchar(50)  NOT NULL,
-    Date datetime  NOT NULL,
+    StartDate datetime  NOT NULL,
+    EndDate datetime  NOT NULL,
     Limit int  NULL,
     CONSTRAINT Lectures_pk PRIMARY KEY  (LectureID)
 );
@@ -119,7 +121,6 @@ CREATE TABLE Lectures (
 CREATE TABLE Lectures_attendance (
     CustomerID int  NOT NULL,
     LectureID int  NOT NULL,
-    Date datetime  NOT NULL,
     Attendance varchar(10)  NOT NULL,
     CONSTRAINT Lectures_attendance_pk PRIMARY KEY  (CustomerID,LectureID)
 );
@@ -167,7 +168,8 @@ CREATE TABLE Single_Studies (
     LectureID int  NOT NULL,
     Major varchar(50)  NOT NULL,
     Type varchar(50)  NOT NULL,
-    Date datetime  NOT NULL,
+    StartDate datetime  NOT NULL,
+    EndDate datetime  NOT NULL,
     PriceInAdvance money  NOT NULL,
     PriceWhole money  NOT NULL,
     Limit int  NULL,
@@ -191,7 +193,6 @@ CREATE TABLE Studies (
 -- Table: Subjects
 CREATE TABLE Subjects (
     SubjectID int  NOT NULL,
-    SyllabusID int  NOT NULL,
     LecturerID int  NOT NULL,
     SubjectName varchar(50)  NOT NULL,
     SubjectDescription varchar(200)  NOT NULL,
@@ -233,20 +234,31 @@ CREATE TABLE Translator_details (
 CREATE TABLE Webinars (
     ServiceID int  NOT NULL,
     WebinarName varchar(50)  NOT NULL,
-    Date datetime  NOT NULL,
+    StartDate datetime  NOT NULL,
+    EndDate datetime  NOT NULL,
     PriceInAdvance money  NOT NULL,
     PriceWhole money  NOT NULL,
     CONSTRAINT Webinars_pk PRIMARY KEY  (ServiceID)
 );
 
+-- Table: Webinars_attendance
+CREATE TABLE Webinars_attendance (
+    WebinarID int  NOT NULL,
+    CustomerID int  NOT NULL,
+    Attendance varchar(10)  NOT NULL,
+    CONSTRAINT Webinars_attendance_pk PRIMARY KEY  (CustomerID,WebinarID)
+);
+
 -- Table: Webinars_hist
 CREATE TABLE Webinars_hist (
+    WebinarID int  NOT NULL,
     ServiceID int  NOT NULL,
     LecturerID int  NOT NULL,
     TranslatorID int  NOT NULL,
-    Date datetime  NOT NULL,
+    StartDate datetime  NOT NULL,
+    EndDate datetime  NOT NULL,
     LinkNagranie varchar(50)  NOT NULL,
-    CONSTRAINT Webinars_hist_pk PRIMARY KEY  (ServiceID,LecturerID)
+    CONSTRAINT Webinars_hist_pk PRIMARY KEY  (WebinarID)
 );
 
 -- foreign keys
@@ -404,6 +416,16 @@ ALTER TABLE Translator_details ADD CONSTRAINT Translator_details_Translator
 ALTER TABLE Webinars ADD CONSTRAINT Webinars_Cennik
     FOREIGN KEY (ServiceID)
     REFERENCES Services (ServiceID);
+
+-- Reference: Webinars_attendance_Customers (table: Webinars_attendance)
+ALTER TABLE Webinars_attendance ADD CONSTRAINT Webinars_attendance_Customers
+    FOREIGN KEY (CustomerID)
+    REFERENCES Customers (CustomerID);
+
+-- Reference: Webinars_attendance_Webinars_hist (table: Webinars_attendance)
+ALTER TABLE Webinars_attendance ADD CONSTRAINT Webinars_attendance_Webinars_hist
+    FOREIGN KEY (WebinarID)
+    REFERENCES Webinars_hist (WebinarID);
 
 -- Reference: Webinars_hist_Lecturers (table: Webinars_hist)
 ALTER TABLE Webinars_hist ADD CONSTRAINT Webinars_hist_Lecturers
