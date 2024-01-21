@@ -508,7 +508,7 @@ for i in range(len(table)):
     #enddate = datetime.strftime(datetime.strptime(startdate, '%Y-%m-%d %H:%M:%S') + timedelta(hours=2), '%Y-%m-%d %H:%M:%S')
     #x = (data[1],data[2],enddate, round(float(data[4])/3,2), float(data[4]))
     #w = data[3].replace(',','')
-    x = "EXEC AddWebinar '{}', '{}', '{}', {}, {}, 2, 3, www.strumyk.pl".format(*data)
+    x = "EXEC AddWebinar '{}', '{}', '{}', {}, {}, 2, 3, 'www.strumyk.pl'".format(*data)
     newdata.append(x)
 
 
