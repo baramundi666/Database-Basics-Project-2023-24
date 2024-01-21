@@ -1,5 +1,6 @@
 --1. Raporty finansowe – zestawienie przychodów dla każdego webinaru/kursu/studium.
-
+use u_makrol
+go
 Create view dbo.FinancialRaport as(
 select Major as Nazwa, sum(Services.PriceWhole) as Przychody, Studies.StartDate as Date
 from Services 
