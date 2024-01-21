@@ -72,58 +72,103 @@ System zawiera informacje o założonych kontach, wykupionych usługach, statusa
 #### 4.1.1    Customers
 - PK: CustomerID
 - Opis: Tabela przechowuje informacje na temat klientów firmy/studentów
+
 ```sql
-CREATE TABLE Customers (
-    CustomerID int  NOT NULL,
-    FirstName varchar(50)  NOT NULL,
-    LastName varchar(50)  NOT NULL,
-    Balance money  NOT NULL,
-    Email varchar(50)  NOT NULL,
-    City varchar(50)  NOT NULL,
-    Street varchar(50)  NOT NULL,
-    Address varchar(50)  NOT NULL,
-    PostalCode varchar(50)  NOT NULL,
-    CONSTRAINT Customer_ID PRIMARY KEY  (CustomerID)
+ CREATE TABLE Courses (
+    ServiceID int IDENTITY(3,4) PRIMARY KEY,
+    CourseName varchar(50)  NOT NULL,
+    Type varchar(20)  CHECK(Type in ('Online', 'Hybrid', 'Stationary')) NOT NULL,
+    StartDate datetime CHECK(StartDate >= '2019-01-01') NOT NULL,
+    EndDate datetime   NOT NULL,
+    PriceInAdvance money   NOT NULL,
+    PriceWhole money  NOT NULL,
+    Limit int NULL,
+	CONSTRAINT CoursesDateCheck CHECK (
+	ISDATE(StartDate) = 1 AND
+	ISDATE(EndDate) = 1 AND
+	EndDate > StartDate
+	),
+	CONSTRAINT CoursesPriceCheck CHECK (
+	PriceInAdvance >= 0 AND
+	PriceWhole >= 0 AND 
+	PriceInAdvance <= PriceWhole
+	),
+	CONSTRAINT CoursesLimitCheck CHECK (
+	Limit > 0 OR Limit IS NULL
+	)
 );
+
+ALTER TABLE Courses ADD CONSTRAINT Courses_Cennik
+    FOREIGN KEY (ServiceID)
+    REFERENCES Services (ServiceID);
 ```
+
 #### 4.1.2    Orders
 - PK: OrderID
 - FK: CustomerID
 - Opis: Tabela przechowuje spis wszystkich przeszłych zamówień, pole *OrderStatus* wskazuje na to, czy zamówienie jest na razie w koszyku, czy zostało już zrealizowane
+
 ```sql
 CREATE TABLE Orders (
-    OrderID int  NOT NULL,
+    OrderID int  IDENTITY(1,1) PRIMARY KEY,
     CustomerID int  NOT NULL,
-    OrderDate date  NOT NULL,
+    OrderDate datetime CHECK(OrderDate >= '2019-01-01') NOT NULL,
     PaymentAssesed money  NOT NULL,
     PaymentPaid money  NOT NULL,
     PaymentWaived money  NOT NULL,
-    DueDate date  NOT NULL,
-    OrderStatus varchar(3)  NOT NULL,
-    CONSTRAINT Orders_pk PRIMARY KEY  (OrderID)
+    DueDate datetime   NOT NULL,
+    OrderStatus varchar(10) CHECK(OrderStatus in ('Ordered', 'InCart'))  NOT NULL,
+	CONSTRAINT OrdersDateCheck CHECK (
+	ISDATE(DueDate) = 1 AND
+	ISDATE(OrderDate) = 1 AND
+	DueDate > OrderDate
+	),
+	CONSTRAINT OrdersPaymentCheck CHECK (
+	PaymentAssesed > 0 AND
+	PaymentPaid > 0 AND
+	PaymentWaived >= 0 AND
+	PaymentAssesed >= PaymentPaid
+	)
 );
+
+ALTER TABLE Orders ADD CONSTRAINT Orders_Customers
+    FOREIGN KEY (CustomerID)
+    REFERENCES Customers (CustomerID);
 ```
 #### 4.1.3    Order_details
 - PK: OrderID, ServiceID
 - FK: OrderID, ServiceID
 - Opis: Tabela przechowuje informacje na temat każdego z zamówień z tabeli *Orders*
+
 ```sql
 CREATE TABLE Order_details (
     ServiceID int  NOT NULL,
     OrderID int  NOT NULL,
     UnitPrice money  NOT NULL,
-    CONSTRAINT Order_details_pk PRIMARY KEY  (ServiceID,OrderID)
+    CONSTRAINT Order_details_pk PRIMARY KEY  (ServiceID,OrderID),
+	CONSTRAINT Order_detailsUnitPriceCheck CHECK (
+	UnitPrice >= 0
+	)
 );
+
+ALTER TABLE Order_details ADD CONSTRAINT Order_details_Orders
+    FOREIGN KEY (OrderID)
+    REFERENCES Orders (OrderID);
 ```
 #### 4.1.4    Services
 - PK: ServiceID
 - Opis: Tabela przechowuje wszystkie usługi wraz z ceną
+
 ```sql
 CREATE TABLE Services (
-    ServiceID int  NOT NULL,
-    PriceInAdvance money  NOT NULL,
+    ServiceID int  PRIMARY KEY,
+    PriceInAdvance money   NOT NULL,
     PriceWhole money  NOT NULL,
-    CONSTRAINT Services_pk PRIMARY KEY  (ServiceID)
+	CONSTRAINT ServicesPriceCheck CHECK (
+	PriceInAdvance >= 0 AND
+	PriceWhole >= 0 AND 
+	PriceInAdvance <= PriceWhole
+	)
 );
 ```
 &nbsp;
@@ -132,50 +177,110 @@ CREATE TABLE Services (
 - PK: ServiceID
 - FK: ServiceID, SyllabusID
 - Opis: Tabela przechowuje wszystkie realizowane studia teraz i w przeszłości
+
 ```sql
 CREATE TABLE Studies (
-    ServiceID int  NOT NULL,
+    ServiceID int IDENTITY(2,4) PRIMARY KEY,
     SyllabusID int  NOT NULL,
-    Major varchar(50)  NOT NULL,
-    Type varchar(30)  NOT NULL,
-    StartDate date  NOT NULL,
-    EndDate date  NOT NULL,
+    Major varchar(50)  CHECK (LEFT(Major, 1) = UPPER(LEFT(Major, 1))) NOT NULL,
+    StartDate datetime CHECK(StartDate >= '2019-01-01') NOT NULL,
+    EndDate datetime   NOT NULL,
     PriceInAdvance money  NOT NULL,
     PriceWhole money  NOT NULL,
-    CONSTRAINT Studies_pk PRIMARY KEY  (ServiceID)
+	Limit int NULL,
+	CONSTRAINT StudiesDateCheck CHECK (
+	ISDATE(StartDate) = 1 AND
+	ISDATE(EndDate) = 1 AND
+	EndDate > StartDate
+	),
+	CONSTRAINT StudiesPriceCheck CHECK (
+	PriceInAdvance >= 0 AND
+	PriceWhole >= 0 AND 
+	PriceInAdvance <= PriceWhole
+	),
+	CONSTRAINT StudiesLimitCheck CHECK (
+	Limit > 0 OR Limit IS NULL
+	)
 );
+
+ALTER TABLE Studies ADD CONSTRAINT Studies_Cennik
+    FOREIGN KEY (ServiceID)
+    REFERENCES Services (ServiceID);
+
+ALTER TABLE Studies ADD CONSTRAINT Studies_Syllabus
+    FOREIGN KEY (SyllabusID)
+    REFERENCES Syllabus (SyllabusID);
 ```
 #### 4.2.2  SingleStudies
 - PK: ServiceID
 - FK: ServiceID
 - Opis: Tabela przechowuje możliwe pojedyncze zajęcia studyjne
+
 ```sql
 CREATE TABLE Single_Studies (
-    ServiceID int  NOT NULL,
-    Major varchar(50)  NOT NULL,
-    Type varchar(20)  NOT NULL,
-    Date datetime  NOT NULL,
-    PriceInAdvance money  NOT NULL,
+    ServiceID int IDENTITY(4,4) PRIMARY KEY,
+	LectureID int NOT NULL,
+    Major varchar(50)  CHECK (LEFT(Major, 1) = UPPER(LEFT(Major, 1))) NOT NULL,
+	Type varchar(20)  CHECK(Type in ('Online', 'Hybrid', 'Stationary')) NOT NULL, 
+	Limit int NULL,
+    PriceInAdvance money   NOT NULL,
     PriceWhole money  NOT NULL,
-    CONSTRAINT Single_Studies_pk PRIMARY KEY  (ServiceID)
+	CONSTRAINT Single_StudiesPriceCheck CHECK (
+	PriceInAdvance >= 0 AND
+	PriceWhole >= 0 AND 
+	PriceInAdvance <= PriceWhole
+	),
+	CONSTRAINT Single_StudiesLimitCheck CHECK (
+	Limit > 0 OR Limit IS NULL
+	)
 );
+
+ALTER TABLE Single_Studies ADD CONSTRAINT Services_Single_Studies
+    FOREIGN KEY (ServiceID)
+    REFERENCES Services (ServiceID);
+
+ALTER TABLE Single_Studies ADD CONSTRAINT Lectures_Single_Studies
+    FOREIGN KEY (LectureID)
+    REFERENCES Lectures(LectureID);
 ```
 #### 4.2.3  Lectures
 - PK: LectureID
 - FK: ServiceID, LecturerID, TranslatorID
 - Opis: Tabela przechowuje wszystkie histoyczne wykłady zajęć studyjnych
+
 ```sql
 CREATE TABLE Lectures (
-    LectureID int  NOT NULL,
+    LectureID int IDENTITY(1,1) PRIMARY KEY,
     LecturerID int  NOT NULL,
     TranslatorID int  NOT NULL,
     ServiceID int  NOT NULL,
-    CategoryID int  NOT NULL,
-    Language varchar(50)  NOT NULL,
-    LinkNagranie varchar(50)  NOT NULL,
-    Date date  NOT NULL,
-    CONSTRAINT Lectures_pk PRIMARY KEY  (LectureID)
+    Type varchar(20)  CHECK(Type in ('Online', 'Hybrid', 'Stationary')) NOT NULL,
+    Language varchar(50) CHECK (LEFT(Language, 1) = UPPER(LEFT(Language, 1))) NOT NULL,
+	LinkNagranie varchar(50) NULL,
+	StartDate datetime NOT NULL,
+    EndDate datetime  NOT NULL,
+	Limit int NULL,
+	CONSTRAINT LecturesDateCheck CHECK (
+	ISDATE(StartDate) = 1 AND
+	ISDATE(EndDate) = 1 AND
+	EndDate > StartDate
+	),
+	CONSTRAINT LecturesLimitCheck CHECK (
+	Limit > 0 OR Limit IS NULL
+	)
 );
+
+ALTER TABLE Lectures ADD CONSTRAINT Lectures_Lecturers
+    FOREIGN KEY (LecturerID)
+    REFERENCES Lecturers (LecturerID);
+
+ALTER TABLE Lectures ADD CONSTRAINT Lectures_Studies
+    FOREIGN KEY (ServiceID)
+    REFERENCES Studies (ServiceID);
+
+ALTER TABLE Lectures ADD CONSTRAINT Lectures_Translator
+    FOREIGN KEY (TranslatorID)
+    REFERENCES Translator (TranslatorID);
 ```
 #### 4.2.4  Lectures_attendance
 - PK: CustomerID, LectureID
@@ -185,91 +290,156 @@ CREATE TABLE Lectures (
 CREATE TABLE Lectures_attendance (
     CustomerID int  NOT NULL,
     LectureID int  NOT NULL,
-    Date datetime  NOT NULL,
-    Attendance varchar(20)  NOT NULL,
+    Attendance varchar(10) CHECK(Attendance in ('Present', 'Absent'))  NOT NULL,
     CONSTRAINT Lectures_attendance_pk PRIMARY KEY  (CustomerID,LectureID)
 );
+
+ALTER TABLE Lectures_attendance ADD CONSTRAINT Lectures_attendance_Lectures
+    FOREIGN KEY (LectureID)
+    REFERENCES Lectures (LectureID);
+
+ALTER TABLE Lectures_attendance ADD CONSTRAINT Lectures_details_Customers
+    FOREIGN KEY (CustomerID)
+    REFERENCES Customers (CustomerID);
 ```
 #### 4.2.5  Exams
 - PK: CustomerID, ServiceID
 - FK: CustomerID, ServiceID
 - Opis: Tabela przechowuje listę egzaminów każdego ze studentów
+
 ```sql
 CREATE TABLE Exams (
     ServiceID int  NOT NULL,
     CustomerID int  NOT NULL,
-    Grade int  NOT NULL,
+    Grade float(1) CHECK (Grade in (2.0,3.0,3.5,4.0,4.5,5.0))  NOT NULL,
     CONSTRAINT Exams_pk PRIMARY KEY  (ServiceID,CustomerID)
 );
+
+ALTER TABLE Exams ADD CONSTRAINT Exams_Customers
+    FOREIGN KEY (CustomerID)
+    REFERENCES Customers (CustomerID);
+
+ALTER TABLE Exams ADD CONSTRAINT Exams_Studies
+    FOREIGN KEY (ServiceID)
+    REFERENCES Studies (ServiceID);
 ```
 #### 4.2.6  Diplomas
 - PK: DiplomaID
 - FK: CustomerID, ServiceID
 - Opis: Tabela przechowuje dyplomy przyznane za ukończenie studiów
+
 ```sql
 CREATE TABLE Diplomas (
-    DiplomaID int  NOT NULL,
+    DiplomaID int IDENTITY(1,1) PRIMARY KEY,
     ServiceID int  NOT NULL,
     CustomerID int  NOT NULL,
-    Date date  NOT NULL,
-    Title varchar(30)  NOT NULL,
-    CONSTRAINT Diplomas_pk PRIMARY KEY  (DiplomaID)
+    Date datetime  CHECK(Date >= '2019-01-01') NOT NULL,
+    Title varchar(30) CHECK (LEFT(Title, 1) = UPPER(LEFT(Title, 1))) NOT NULL,
+	CONSTRAINT DiplomasDateCheck CHECK (
+	ISDATE(Date) = 1
+	)
 );
+
+ALTER TABLE Diplomas ADD CONSTRAINT Diplomas_Exams
+    FOREIGN KEY (ServiceID,CustomerID)
+    REFERENCES Exams (ServiceID,CustomerID);
 ```
 #### 4.2.7  Internships
 - PK: InternshipID
 - FK: ServiceID
 - Opis: Tabela przechowuje praktyki z każdych studiów
+
 ```sql
 CREATE TABLE Internships (
-    InternshipID int  NOT NULL,
-    InternshipName varchar(200)  NOT NULL,
-    InternshipDescription varchar(200)  NOT NULL,
+    InternshipID int  IDENTITY(1,1) PRIMARY KEY,
     ServiceID int  NOT NULL,
-    StartDate date  NOT NULL,
-    EndDate date  NOT NULL,
-    CONSTRAINT Internships_pk PRIMARY KEY  (InternshipID)
+    InternshipName varchar(200) CHECK (LEFT(InternshipName, 1) = UPPER(LEFT(InternshipName, 1))) NOT NULL,
+    InternshipDescription varchar(200)   NOT NULL,
+    StartDate datetime CHECK(StartDate >= '2019-01-01') NOT NULL,
+    EndDate datetime  NOT NULL,
+	CONSTRAINT InternshipsDateCheck CHECK (
+	ISDATE(StartDate) = 1 AND
+	ISDATE(EndDate) = 1 AND
+	EndDate > StartDate
+	)
 );
+
+ALTER TABLE Internships ADD CONSTRAINT Internships_Studies
+    FOREIGN KEY (ServiceID)
+    REFERENCES Studies (ServiceID);
 ```
 #### 4.2.8  Internships_passed
 - PK: InternshipID, CustomerID
 - FK: InternshipID, CustomerID
 - Opis: Tabela przechowuje informację, czy praktyka została zaliczona przez danego studenta
+
 ```sql
 CREATE TABLE Internships_passed (
     InternshipID int  NOT NULL,
     CustomerID int  NOT NULL,
-    Passed varchar(10)  NOT NULL,
+    Passed varchar(3) CHECK(Passed in ('Yes', 'No')) NOT NULL,
     CONSTRAINT Internships_passed_pk PRIMARY KEY  (InternshipID,CustomerID)
 );
+
+ALTER TABLE Internships_passed ADD CONSTRAINT Internships_passed_Customers
+    FOREIGN KEY (CustomerID)
+    REFERENCES Customers (CustomerID);
+
+ALTER TABLE Internships_passed ADD CONSTRAINT Internships_passed_Internships
+    FOREIGN KEY (InternshipID)
+    REFERENCES Internships (InternshipID);
 ```
 #### 4.2.9  Syllabus
 - PK: SyllabusID
-- FK: SubjectID
 - Opis: Tabela przechowuje plan zajęć każdego z kierunków studiów
+
 ```sql
 CREATE TABLE Syllabus (
-    SyllabusID int  NOT NULL,
-    SubjectID int  NOT NULL,
-    SyllabusName varchar(50)  NOT NULL,
-    CONSTRAINT Syllabus_pk PRIMARY KEY  (SyllabusID)
+    SyllabusID int IDENTITY(1,1) PRIMARY KEY,
+    SyllabusName varchar(50) CHECK (LEFT(SyllabusName, 1) = UPPER(LEFT(SyllabusName, 1))) NOT NULL,
 );
 ```
-#### 4.2.10 Subjects
+#### 4.2.10  Syllabus_details
+- PK: SyllabusID, SubjectID
+- FK: SyllabusID, SubjectID
+- Opis: Tabela przechowuje przedmioty każdego z Syllabusów
+
+```sql
+CREATE TABLE Syllabus_details (
+    SyllabusID int  NOT NULL,
+    SubjectID int  NOT NULL,
+    CONSTRAINT Syllabus_details_pk PRIMARY KEY  (SubjectID,SyllabusID)
+);
+
+ALTER TABLE Syllabus_details ADD CONSTRAINT Syllabus_details_Subjects
+    FOREIGN KEY (SubjectID)
+    REFERENCES Subjects (SubjectID);
+
+ALTER TABLE Syllabus_details ADD CONSTRAINT Syllabus_details_Syllabus
+    FOREIGN KEY (SyllabusID)
+    REFERENCES Syllabus (SyllabusID);
+```
+#### 4.2.11 Subjects
 - PK: SubjectID
 - FK: LecturerID
 - Opis: Tabela przechowuje informacje na temat każdego z przedmiotów studyjnych
+
 ```sql
 CREATE TABLE Subjects (
-    SubjectID int  NOT NULL,
+    SubjectID int  IDENTITY(1,1) PRIMARY KEY,
     LecturerID int  NOT NULL,
-    SubjectName int  NOT NULL,
-    SubjectDescription int  NOT NULL,
+    SubjectName varchar(50) CHECK (LEFT(SubjectName, 1) = UPPER(LEFT(SubjectName, 1))) NOT NULL,
+    SubjectDescription varchar(200) NOT NULL,
     Hours int  NOT NULL,
-    Assessment int  NOT NULL,
-    Syllabus_SyllabusID int  NOT NULL,
-    CONSTRAINT Subjects_pk PRIMARY KEY  (SubjectID)
+    Assessment varchar(30) CHECK(Assessment in ('Attendance', 'Exam', 'Internship'))NOT NULL,
+	CONSTRAINT SubjectsHoursCheck CHECK (
+	Hours > 0
+	)
 );
+
+ALTER TABLE Subjects ADD CONSTRAINT Subjects_Lecturers
+    FOREIGN KEY (LecturerID)
+    REFERENCES Lecturers (LecturerID);
 ```
 &nbsp;
 ### 4.3   *Webinars* <a name="web"></a>
@@ -277,28 +447,63 @@ CREATE TABLE Subjects (
 - PK: ServiceID
 - FK: ServiceID
 - Opis: Tabela przechowuje wszystkie webinary
+
 ```sql
 CREATE TABLE Webinars (
-    ServiceID int  NOT NULL,
-    WebinarName varchar(50)  NOT NULL,
-    Date datetime  NOT NULL,
-    PriceInAdvance money  NOT NULL,
+    ServiceID int  IDENTITY(1,4) PRIMARY KEY,
+    WebinarName varchar(50)  CHECK (LEFT(WebinarName, 1) = UPPER(LEFT(WebinarName, 1))) NOT NULL,
+	StartDate datetime CHECK(StartDate >= '2019-01-01') NOT NULL,
+    EndDate datetime  NOT NULL,
+    PriceInAdvance money   NOT NULL,
     PriceWhole money  NOT NULL,
-    CONSTRAINT Webinars_pk PRIMARY KEY  (ServiceID)
+	CONSTRAINT WebinarsDateCheck CHECK (
+	ISDATE(StartDate) = 1 AND
+	ISDATE(EndDate) = 1 AND
+	EndDate > StartDate
+	),
+	CONSTRAINT WebinarsPriceCheck CHECK (
+	PriceInAdvance >= 0 AND
+	PriceWhole >= 0 AND 
+	PriceInAdvance <= PriceWhole
+	)
 );
+
+ALTER TABLE Webinars ADD CONSTRAINT Webinars_Services
+    FOREIGN KEY (ServiceID)
+    REFERENCES Services (ServiceID);
 ```
 #### 4.3.2   Webinars_hist
 - PK: ServiceID, LecturerID
 - FK: ServiceID, LecturerID, TranslatorID
 - Opis: Tabela przechowuje informacje na temat każdego z webinarów
+
 ```sql
 CREATE TABLE Webinars_hist (
+    WebinarID int IDENTITY(1,1) PRIMARY KEY,
     ServiceID int  NOT NULL,
-    TranslatorID int  NOT NULL,
     LecturerID int  NOT NULL,
-    Date int  NOT NULL,
-    CONSTRAINT Webinars_hist_pk PRIMARY KEY  (ServiceID,LecturerID)
+    TranslatorID int  NOT NULL,
+    StartDate datetime CHECK(StartDate >= '2019-01-01')  NOT NULL,
+    EndDate datetime  NOT NULL,
+    LinkNagranie varchar(50)  NOT NULL,
+    CONSTRAINT Webinars_histDateCheck CHECK (
+    ISDATE(StartDate) = 1 AND
+    ISDATE(EndDate) = 1 AND
+    EndDate > StartDate
+    )
 );
+
+ALTER TABLE Webinars_hist ADD CONSTRAINT Webinars_hist_Lecturers
+    FOREIGN KEY (LecturerID)
+    REFERENCES Lecturers (LecturerID);
+
+ALTER TABLE Webinars_hist ADD CONSTRAINT Webinars_hist_Translator
+    FOREIGN KEY (TranslatorID)
+    REFERENCES Translator (TranslatorID);
+
+ALTER TABLE Webinars_hist ADD CONSTRAINT Webinars_hist_Webinars
+    FOREIGN KEY (ServiceID)
+    REFERENCES Webinars (ServiceID);
 ```
 &nbsp;
 ### 4.3    *Kursy* <a name="crs"></a>
@@ -306,79 +511,172 @@ CREATE TABLE Webinars_hist (
 - PK: ServiceID
 - FK: ServiceID
 - Opis: Tabela przechowuje wszystkie realizowane kursy teraz i w przeszłości
+
 ```sql
 CREATE TABLE Courses (
-    ServiceID int  NOT NULL,
-    CourseName int  NOT NULL,
-    Type varchar(50)  NOT NULL,
-    StartDate varchar(500)  NOT NULL,
-    EndDate int  NOT NULL,
-    PriceInAdvance varchar(30)  NOT NULL,
-    PriceWhole int  NOT NULL,
-    CONSTRAINT Courses_pk PRIMARY KEY  (ServiceID)
+    ServiceID int IDENTITY(3,4) PRIMARY KEY,
+    CourseName varchar(50)  NOT NULL,
+    Type varchar(20)  CHECK(Type in ('Online', 'Hybrid', 'Stationary')) NOT NULL,
+    StartDate datetime CHECK(StartDate >= '2019-01-01') NOT NULL,
+    EndDate datetime   NOT NULL,
+    PriceInAdvance money   NOT NULL,
+    PriceWhole money  NOT NULL,
+    Limit int NULL,
+	CONSTRAINT CoursesDateCheck CHECK (
+	ISDATE(StartDate) = 1 AND
+	ISDATE(EndDate) = 1 AND
+	EndDate > StartDate
+	),
+	CONSTRAINT CoursesPriceCheck CHECK (
+	PriceInAdvance >= 0 AND
+	PriceWhole >= 0 AND 
+	PriceInAdvance <= PriceWhole
+	),
+	CONSTRAINT CoursesLimitCheck CHECK (
+	Limit > 0 OR Limit IS NULL
+	)
 );
+
+ALTER TABLE Courses ADD CONSTRAINT Courses_Cennik
+    FOREIGN KEY (ServiceID)
+    REFERENCES Services (ServiceID);
 ```
 #### 4.3.2  Modules
 - PK: ModuleID
 - FK: ServiceID
 - Opis: Tabela przechowuje listę modułów każdego z kursów
+
 ```sql
 CREATE TABLE Modules (
-    ModuleID int  NOT NULL,
+    ModuleID int  IDENTITY(1,1) PRIMARY KEY,
     ServiceID int  NOT NULL,
-    CONSTRAINT Modules_pk PRIMARY KEY  (ModuleID)
+    ModuleName varchar(50) NOT NULL
 );
+
+ALTER TABLE Modules ADD CONSTRAINT Modules_Courses
+    FOREIGN KEY (ServiceID)
+    REFERENCES Courses (ServiceID);
 ```
 #### 4.3.3  Courses_hist
 - PK: ClassID
 - FK: ModuleID, LecturerID, TranslatorID
 - Opis: Tabela przechowuje informacje o każdym module
+
 ```sql
 CREATE TABLE Courses_hist (
-    ClassID int  NOT NULL,
+    ClassID int IDENTITY(1,1) PRIMARY KEY,
     ModuleID int  NOT NULL,
     LecturerID int  NOT NULL,
     TranslatorID int  NOT NULL,
-    Date int  NOT NULL,
-    CONSTRAINT Courses_hist_pk PRIMARY KEY  (ClassID)
+	StartDate datetime CHECK(StartDate >= '2019-01-01') NULL,
+    EndDate datetime  NOT NULL,
+	Type varchar(20)  CHECK(Type in ('Online', 'Hybrid', 'Stationary')) NOT NULL,
+	LinkNagranie varchar(50) NULL,
+	CONSTRAINT Courses_histDateCheck CHECK (
+	ISDATE(StartDate) = 1 AND
+	ISDATE(EndDate) = 1 AND
+	EndDate > StartDate
+	)
 );
+
+ALTER TABLE Courses_hist ADD CONSTRAINT Courses_hist_Lecturers
+    FOREIGN KEY (LecturerID)
+    REFERENCES Lecturers (LecturerID);
+
+ALTER TABLE Courses_hist ADD CONSTRAINT Courses_hist_Modules
+    FOREIGN KEY (ModuleID)
+    REFERENCES Modules (ModuleID);
+
+ALTER TABLE Courses_hist ADD CONSTRAINT Courses_hist_Translator
+    FOREIGN KEY (TranslatorID)
+    REFERENCES Translator (TranslatorID);
 ```
 #### 4.3.4  Courses_attendace
 - PK: ClassID, CustomerID
 - FK: ClassID, CustomerID
 - Opis: Tabela przechowuje listę obecności każdego z modułów
+
 ```sql
 CREATE TABLE Courses_attendance (
     ClassID int  NOT NULL,
     CustomerID int  NOT NULL,
     ModuleID int  NOT NULL,
-    Attendance varchar(20)  NOT NULL,
+    Attendance varchar(10) CHECK(Attendance in ('Present', 'Absent'))  NOT NULL,
     CONSTRAINT Courses_attendance_pk PRIMARY KEY  (CustomerID,ClassID)
 );
+
+ALTER TABLE Courses_attendance ADD CONSTRAINT Courses_attendance_Courses_hist
+    FOREIGN KEY (ClassID)
+    REFERENCES Courses_hist (ClassID);
+
+ALTER TABLE Courses_attendance ADD CONSTRAINT Courses_attendance_Customers
+    FOREIGN KEY (CustomerID)
+    REFERENCES Customers (CustomerID);
 ```
 &nbsp;
 ### 4.4 *Common tables* <a name="ctb"></a>
 #### 4.4.1   Lecturers
 - PK: LecturerID
 - Opis: Tabela przechowuje informacje na temat każdego z wykładowców
+
 ```sql
 CREATE TABLE Lecturers (
-    LecturerID int  NOT NULL,
-    FirstName varchar(50)  NOT NULL,
-    LastName varchar(50)  NOT NULL,
-    CONSTRAINT Lecturer_ID PRIMARY KEY  (LecturerID)
+    LecturerID int IDENTITY(1,1) PRIMARY KEY,
+    FirstName varchar(50) CHECK (LEFT(FirstName, 1) = UPPER(LEFT(FirstName, 1))) NOT NULL,
+    LastName varchar(50) CHECK (LEFT(LastName, 1) = UPPER(LEFT(LastName, 1))) NOT NULL,
 );
+
+ALTER TABLE Lectures ADD CONSTRAINT Lectures_Lecturers
+    FOREIGN KEY (LecturerID)
+    REFERENCES Lecturers (LecturerID);
+
+ALTER TABLE Lectures ADD CONSTRAINT Lectures_Studies
+    FOREIGN KEY (ServiceID)
+    REFERENCES Studies (ServiceID);
+
+ALTER TABLE Lectures ADD CONSTRAINT Lectures_Translator
+    FOREIGN KEY (TranslatorID)
+    REFERENCES Translator (TranslatorID);
 ```
 #### 4.4.2   Translator
 - PK: TranslatorID
 - Opis: Tabela przechowuje informacje na temat każdego z tłumaczy
+
 ```sql
 CREATE TABLE Translator (
+    TranslatorID int  IDENTITY(1,1) PRIMARY KEY,
+    FirstName varchar(50) CHECK (LEFT(FirstName, 1) = UPPER(LEFT(FirstName, 1))) NOT NULL,
+    LastName varchar(50) CHECK (LEFT(LastName, 1) = UPPER(LEFT(LastName, 1))) NOT NULL,
+);
+```
+#### 4.4.3   Translator_details
+- PK: TranslatorID, LanguageID
+- FK: TranslatorID, LanguageID
+- Opis: Tabela przechowuje informacje na temat języków, które zna każdy z tłumaczy
+
+```sql
+CREATE TABLE Translator_details (
     TranslatorID int  NOT NULL,
-    FirstName varchar(50)  NOT NULL,
-    LastName varchar(50)  NOT NULL,
-    Language varchar(50)  NOT NULL,
-    CONSTRAINT Translator_pk PRIMARY KEY  (TranslatorID)
+    LanguageID int  NOT NULL,
+    CONSTRAINT Translator_details_pk PRIMARY KEY  (TranslatorID,LanguageID)
+);
+
+ALTER TABLE Translator_details ADD CONSTRAINT Translator_details_Languages
+    FOREIGN KEY (LanguageID)
+    REFERENCES Languages (LanguageID);
+
+ALTER TABLE Translator_details ADD CONSTRAINT Translator_details_Translator
+    FOREIGN KEY (TranslatorID)
+    REFERENCES Translator (TranslatorID);
+```
+#### 4.4.4   Languages
+- PK: LanguageID
+- Opis: Tabela przechowuje informacje dostępnych języków
+
+```sql
+CREATE TABLE Languages (
+    LanguageID int  IDENTITY(1,1) PRIMARY KEY,
+    LanguageName varchar(50)  NOT NULL,
 );
 ```
 &nbsp;
@@ -564,9 +862,8 @@ CREATE FUNCTION GetStudiesSchedule (@ServiceID INT)
 RETURNS TABLE
 AS
 RETURN (
-    SELECT TOP 100 PERCENT * from Lectures 
+    SELECT * from Lectures 
 	where Lectures.ServiceID = @ServiceID
-	order by Lectures.Date DESC
 )
 ```
 ### 3. Harmonogram przyszłych zajęć dla użytkownika
