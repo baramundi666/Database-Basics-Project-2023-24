@@ -14,10 +14,8 @@ BEGIN
     VALUES (@FirstName, @LastName, @Balance, @Email, @City, @Address, @PostalCode);
 END;
 
--- Example of calling the AddCustomer procedure
-EXEC AddCustomer 'John', 'Doe', 100.00, 'john.doe@example.com', 'City', 'Address', '12345';
 
-
+go
 -- Create procedure to add a lecturer
 CREATE PROCEDURE AddLecturer
     @FirstName VARCHAR(50),
@@ -29,9 +27,8 @@ BEGIN
     VALUES (@FirstName, @LastName);
 END;
 
--- Example of calling the AddLecturer procedure
-EXEC AddLecturer 'Mateusz', 'Król';
 
+go
 -- Create procedure to add a translator
 CREATE PROCEDURE AddTranslator
     @FirstName VARCHAR(50),
@@ -43,10 +40,8 @@ BEGIN
     VALUES (@FirstName, @LastName);
 END;
 
--- Example of calling the AddTranslator procedure
-EXEC AddTranslator 'John', 'Smith';
 
-
+go
 CREATE PROCEDURE AddWebinar
     @WebinarName varchar(50),
     @StartDate datetime,
@@ -107,23 +102,8 @@ END;
 
 
 
-BEGIN TRY
-    EXEC AddWebinar
-        'Advanced SQL Techniques3',
-        '2023-02-01',
-        '2023-02-10',
-        70.00,
-        110.00,
-        1,
-        1,
-        'https://example.com/recordings/advanced-sql';
-    PRINT 'Webinar added successfully.';
-END TRY
-BEGIN CATCH
-    PRINT 'Error: ' + ERROR_MESSAGE();
-END CATCH;
 
-
+go
 CREATE PROCEDURE AddCourse
     @CourseName varchar(50),
     @Type varchar(20),
@@ -167,7 +147,7 @@ BEGIN
     END CATCH;
 END;
 
-
+go
 -- Example values for parameters
 DECLARE @CourseName varchar(50) = 'SQL Basics';
 DECLARE @Type varchar(20) = 'Online';
@@ -177,17 +157,8 @@ DECLARE @PriceInAdvance money = 50.00;
 DECLARE @PriceWhole money = 100.00;
 DECLARE @Limit int = 50; -- You can adjust this based on your requirements
 
--- Execute the AddCourse procedure
-EXEC AddCourse 
-    @CourseName,
-    @Type,
-    @StartDate,
-    @EndDate,
-    @PriceInAdvance,
-    @PriceWhole,
-    @Limit;
 
-
+	go
 
 CREATE PROCEDURE AddModule
     @ServiceID int,
@@ -220,18 +191,9 @@ BEGIN
     END CATCH;
 END;
 
--- Example values for parameters
-DECLARE @ServiceIDToAddModuleTo int = 7; -- Replace with the actual ServiceID
-DECLARE @ModuleNameToAdd varchar(50) = 'Module1TEST';
-
--- Execute the AddModule procedure
-EXEC AddModule
-    @ServiceIDToAddModuleTo,
-    @ModuleNameToAdd;
 
 
-
-Select dbo.CheckClassDates(1,'2024-01-01','2024-01-30')
+go
 CREATE PROCEDURE AddClassCourse
     @ModuleID int,
     @LecturerID int,
@@ -288,26 +250,9 @@ BEGIN
 END;
 
 
--- Example values for parameters
-DECLARE @ModuleIDToAddClassTo int = 1; -- Replace with the actual ModuleID
-DECLARE @LecturerIDForClass int = 1; -- Replace with the actual LecturerID
-DECLARE @TranslatorIDForClass int = 1; -- Replace with the actual TranslatorID
-DECLARE @StartDateOfClass datetime = '2024-02-01T10:00:00'; -- 1st February 2024, 10 AM
-DECLARE @EndDateOfClass datetime = '2024-02-01T11:00:00'; -- 1st February 2024, 11 AM
-DECLARE @Type varchar(10) = 'Stationary'; --
-DECLARE @LinkNagranieForClass varchar(50) = 'Link to Recording (optional)';
-
--- Execute the AddClassCourse procedure
-EXEC AddClassCourse
-    @ModuleIDToAddClassTo,
-    @LecturerIDForClass,
-    @TranslatorIDForClass,
-    @StartDateOfClass,
-    @EndDateOfClass,
-	@Type,
-    @LinkNagranieForClass;
 
 
+go
 
 CREATE PROCEDURE AddLanguage
     @LanguageName varchar(50)
@@ -339,8 +284,7 @@ BEGIN
     END CATCH;
 END;
 
-SELECT * from Languages
-
+go
 CREATE PROCEDURE AddTranslatorLanguage
     @TranslatorID int,
     @LanguageID int
@@ -384,10 +328,7 @@ BEGIN
     END CATCH;
 END;
 
-
--- Example: Add a record for TranslatorID = 1 and LanguageID = 2
-EXEC AddTranslatorLanguage @TranslatorID = 1, @LanguageID = 2;
-
+go
 CREATE PROCEDURE AddSubject
     @LecturerID int,
     @SubjectName varchar(50),
@@ -421,12 +362,11 @@ BEGIN
         THROW;
     END CATCH;
 END;
-
+go
 
 -- Example: Add a subject with LecturerID = 1
-EXEC AddSubject @LecturerID = 1, @SubjectName = 'Mathematics', @SubjectDescription = 'Introduction to Mathematics', @Hours = 3, @Assessment = 'Exam';
-select * from Subjects
 
+go
 CREATE PROCEDURE AddSyllabus
     @SyllabusName varchar(50)
 AS
@@ -457,7 +397,7 @@ BEGIN
     END CATCH;
 END;
 
-
+go
 CREATE PROCEDURE AddSyllabusDetails
     @SyllabusID int,
     @SubjectID int
@@ -500,11 +440,11 @@ BEGIN
         THROW;
     END CATCH;
 END;
-
+go
 
 -- Example: Add a record for SyllabusID = 1 and SubjectID = 1
-EXEC AddSyllabusDetails @SyllabusID = 1, @SubjectID = 4;
 
+go
 CREATE PROCEDURE AddStudies
     @SyllabusID int,
     @Major varchar(50),
@@ -551,12 +491,11 @@ BEGIN
 END;
 
 -- Example: Add a study with SyllabusID = 1, Major = 'Computer Science', etc.
-EXEC AddStudies @SyllabusID = 1, @Major = 'Computer Science AGH', @StartDate = '2024-02-01', @EndDate = '2026-06-01', @PriceInAdvance = 1000.00, @PriceWhole = 2000.00, @Limit = 50;
 
 
 
 
-
+go
 -- Create a procedure to add a lecture
 CREATE PROCEDURE AddLecture
     @LecturerID int,
@@ -634,19 +573,10 @@ END;
 
 
 -- Example: Add a lecture
-EXEC AddLecture
-    @LecturerID = 1,
-    @TranslatorID = 1,
-    @ServiceID = 2,
-    @Type = 'Online',
-    @Language = 'English',
-    @StartDate = '2024-02-01 10:00:00',
-    @EndDate = '2024-02-01 11:00:00',
-    @Limit = 100,
-    @LinkNagranie = 'https://example.com/lecture1';
 
 
 
+	go
 -- Create a procedure to add a Single_Studies record
 CREATE PROCEDURE AddSingleStudies
     @LectureID int,
@@ -698,15 +628,9 @@ BEGIN
     END CATCH;
 END;
 
--- Example EXEC statement for AddSingleStudies procedure
-EXEC AddSingleStudies
-    @LectureID = 3, -- Replace with a valid LectureID from your database
-    @Major = 'Computer Science',
-    @Type = 'Online',
-    @Limit = 20, -- Replace with the desired limit (or set to NULL for no limit)
-    @PriceInAdvance = 100.00,
-    @PriceWhole = 200.00;
 
+
+go
 
 -- Create a procedure to add an Internship
 CREATE PROCEDURE AddInternship
@@ -755,17 +679,11 @@ BEGIN
     END CATCH;
 END;
 
--- Example EXEC statement for AddInternship procedure
-EXEC AddInternship
-    @ServiceID = 2, -- Replace with a valid ServiceID from your database
-    @InternshipName = 'Software Development Internship',
-    @InternshipDescription = 'A hands-on internship in software development.',
-    @StartDate = '2024-02-01T10:00:00', -- Replace with the desired StartDate
-    @EndDate = '2024-02-29T17:00:00'; -- Replace with the desired EndDate
 
 
 
 
+go
 -- Create a procedure to add a service to the cart
 CREATE PROCEDURE AddToCart
     @CustomerID INT,
@@ -815,17 +733,10 @@ BEGIN
     END CATCH;
 END;
 
-select * from services
--- Example EXEC statement for AddToCart procedure
-EXEC AddToCart
-    @CustomerID = 1, -- Replace with a valid CustomerID from your database
-    @ServiceID = 3;  -- Replace with a valid ServiceID from your database
-
-select * from orders 
-select * from Order_details
-Select dbo.IsThereCart(1)
 
 
+
+go
 -- Create a procedure to delete a service from the cart
 CREATE PROCEDURE DeleteFromCart
     @CustomerID INT,
@@ -869,9 +780,5 @@ BEGIN
 END;
 
 
--- Example EXEC statement for DeleteFromCart procedure
-EXEC DeleteFromCart
-    @CustomerID = 1, -- Replace with a valid CustomerID from your database
-    @ServiceID = 3;  -- Replace with a valid ServiceID from your database
 
 
