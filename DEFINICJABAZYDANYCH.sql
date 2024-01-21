@@ -221,9 +221,9 @@ CREATE TABLE Single_Studies (
 	LectureID int NOT NULL,
     Major varchar(50)  CHECK (LEFT(Major, 1) = UPPER(LEFT(Major, 1))) NOT NULL,
 	Type varchar(20)  CHECK(Type in ('Online', 'Hybrid', 'Stationary')) NOT NULL, 
-	Limit int NULL,
     PriceInAdvance money   NOT NULL,
     PriceWhole money  NOT NULL,
+	Limit int NULL,
 	CONSTRAINT Single_StudiesPriceCheck CHECK (
 	PriceInAdvance >= 0 AND
 	PriceWhole >= 0 AND 

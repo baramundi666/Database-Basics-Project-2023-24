@@ -1,50 +1,50 @@
-(1,'Laura','Kim'),
-(2,'Troy','Soto'),
-(3,'Yoshio','Mccoy'),
-(4,'Aladdin','Francis'),
-(5,'Hashim','Fry'),
-(6,'Austin','Maynard'),
-(7,'Joel','Woodard'),
-(8,'Patricia','Hayden'),
-(9,'Hedley','Pearson'),
-(10,'Paula','Joyner'),
-(11,'Evelyn','Butler'),
-(12,'Samantha','Estes'),
-(13,'Cadman','Osborne'),
-(14,'Cody','Brennan'),
-(15,'Leah','Owen'),
-(16,'Ciaran','Cantrell'),
-(17,'Ronan','Cook'),
-(18,'Arsenio','Montgomery'),
-(19,'Ulla','Bright'),
-(20,'Deacon','Gonzalez'),
-(21,'Ann','Maynard'),
-(22,'Dolan','Velasquez'),
-(23,'Alika','Burns'),
-(24,'Sandra','Miles'),
-(25,'Lana','Phelps'),
-(26,'Tobias','Callahan'),
-(27,'Fulton','Fox'),
-(28,'Amethyst','Lynn'),
-(29,'Olympia','Drake'),
-(30,'Chancellor','Payne'),
-(31,'Silas','Wooten'),
-(32,'Fiona','Wheeler'),
-(33,'Kenyon','Ramirez'),
-(34,'Lamar','Mays'),
-(35,'Chadwick','Mcknight'),
-(36,'Joshua','Sweet'),
-(37,'Galena','Carrillo'),
-(38,'Norman','Swanson'),
-(39,'Drake','Mayo'),
-(40,'Zahir','Lynch'),
-(41,'Ian','Finley'),
-(42,'Hermione','Benton'),
-(43,'Noelle','Potts'),
-(44,'Kaitlin','Bright'),
-(45,'Fritz','Cleveland'),
-(46,'Elijah','Nielsen'),
-(47,'Cody','Guerra'),
-(48,'Amanda','Alvarez'),
-(49,'Signe','Vincent'),
-(50,'Gregory','Mcgee');
+EXEC AddSubject 'Laura', 'Kim'; 
+EXEC AddSubject 'Troy', 'Soto'; 
+EXEC AddSubject 'Yoshio', 'Mccoy';
+EXEC AddSubject 'Aladdin', 'Francis';
+EXEC AddSubject 'Hashim', 'Fry';
+EXEC AddSubject 'Austin', 'Maynard';
+EXEC AddSubject 'Joel', 'Woodard';
+EXEC AddSubject 'Patricia', 'Hayden';
+EXEC AddSubject 'Hedley', 'Pearson';
+EXEC AddSubject 'Paula', 'Joyner';
+EXEC AddSubject 'Evelyn', 'Butler';
+EXEC AddSubject 'Samantha', 'Estes';
+EXEC AddSubject 'Cadman', 'Osborne';
+EXEC AddSubject 'Cody', 'Brennan';
+EXEC AddSubject 'Leah', 'Owen';
+EXEC AddSubject 'Ciaran', 'Cantrell';
+EXEC AddSubject 'Ronan', 'Cook';
+EXEC AddSubject 'Arsenio', 'Montgomery';
+EXEC AddSubject 'Ulla', 'Bright';
+EXEC AddSubject 'Deacon', 'Gonzalez';
+EXEC AddSubject 'Ann', 'Maynard';
+EXEC AddSubject 'Dolan', 'Velasquez';
+EXEC AddSubject 'Alika', 'Burns';
+EXEC AddSubject 'Sandra', 'Miles';
+EXEC AddSubject 'Lana', 'Phelps';
+EXEC AddSubject 'Tobias', 'Callahan';
+EXEC AddSubject 'Fulton', 'Fox';
+EXEC AddSubject 'Amethyst', 'Lynn';
+EXEC AddSubject 'Olympia', 'Drake';
+EXEC AddSubject 'Chancellor', 'Payne';
+EXEC AddSubject 'Silas', 'Wooten';
+EXEC AddSubject 'Fiona', 'Wheeler';
+EXEC AddSubject 'Kenyon', 'Ramirez';
+EXEC AddSubject 'Lamar', 'Mays';
+EXEC AddSubject 'Chadwick', 'Mcknight';
+EXEC AddSubject 'Joshua', 'Sweet';
+EXEC AddSubject 'Galena', 'Carrillo';
+EXEC AddSubject 'Norman', 'Swanson';
+EXEC AddSubject 'Drake', 'Mayo';
+EXEC AddSubject 'Zahir', 'Lynch';
+EXEC AddSubject 'Ian', 'Finley';
+EXEC AddSubject 'Hermione', 'Benton';
+EXEC AddSubject 'Noelle', 'Potts';
+EXEC AddSubject 'Kaitlin', 'Bright';
+EXEC AddSubject 'Fritz', 'Cleveland';
+EXEC AddSubject 'Elijah', 'Nielsen';
+EXEC AddSubject 'Cody', 'Guerra';
+EXEC AddSubject 'Amanda', 'Alvarez';
+EXEC AddSubject 'Signe', 'Vincent';
+EXEC AddSubject 'Gregory', 'Mcgee';
