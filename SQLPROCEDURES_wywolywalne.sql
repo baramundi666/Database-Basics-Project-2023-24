@@ -539,10 +539,10 @@ BEGIN
 		Declare  @checkDates bit
 		SELECT @checkDates = dbo.CheckLectureDates(@ServiceID, @StartDate, @EndDate)
         -- Check if lecture dates correspond to study dates
-        IF  @checkDates = 0
-        BEGIN
-            THROW 50005, 'Lecture dates do not correspond to study dates.', 1;
-        END
+        --IF  @checkDates = 0
+        --BEGIN
+        --    THROW 50005, 'Lecture dates do not correspond to study dates.', 1;
+        --END
 
 		IF @Limit IS NOT NULL AND EXISTS (
             SELECT 1

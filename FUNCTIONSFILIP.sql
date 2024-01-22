@@ -216,29 +216,6 @@ BEGIN
     RETURN @CustomerBalance;
 END;
 
-CREATE FUNCTION GetClassIDsForModule
-	(@ModuleID INT)
-RETURNS TABLE
-AS
-RETURN
-(
-    SELECT ClassID
-    FROM Courses_attendance
-    WHERE ModuleID = @ModuleID
-
-    UNION
-
-    SELECT ClassID
-    FROM Lectures_attendance
-    WHERE ModuleID = @ModuleID
-
-    UNION
-
-    SELECT ClassID
-    FROM Webinars_attendance
-    WHERE ModuleID = @ModuleID
-);
-
 CREATE FUNCTION GetLecturesForStudies
 	(@ServiceID INT)
 RETURNS TABLE

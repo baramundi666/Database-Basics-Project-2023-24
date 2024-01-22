@@ -103,7 +103,7 @@ table = [(1,1,8,3,'2020-04-12 03:14:32','2023-11-30 10:39:37','http://instagram.
 newdata = []
 import random
 val = 2
-for i in range(100):
+for i in range(1,300):
     #data = table[i]
     #startdate = data[4]
     # enddate = datetime.strftime(datetime.strptime(startdate, '%Y-%m-%d %H:%M:%S') + timedelta(hours=1.5), '%Y-%m-%d %H:%M:%S')
@@ -115,8 +115,11 @@ for i in range(100):
     #x = (data[1],data[2],enddate, round(float(data[4])/3,2), float(data[4]))
     #w = data[3].replace(',','')
     #x = "EXEC AddLecture {}, {}, {}, '{}', '{}', '{}', '{}', {}, '{}'".format(*data)
-    data = (i, (i*19)%63 + 1)
-    x= "EXEC BuyNow {}, {}".format(*data)
+    data = (i, (i*190)%97 + 1)
+    if i<100:
+        x= "EXEC UpdateWebinarsAttendance {}, {}, 'Present'".format(*data)
+    else:
+        x= "EXEC UpdateWebinarsAttendance {}, {}, 'Absent'".format(*data)
     newdata.append(x)
 
 

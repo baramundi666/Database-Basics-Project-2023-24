@@ -311,7 +311,7 @@ union
 
 select
     'Webinars' as ServiceType,
-    w.ServiceID as ServiceID,
+    Webinars.ServiceID as ServiceID,
     Webinars_hist.StartDate as Date,
     Customers.FirstName,
     Customers.LastName,
@@ -473,5 +473,5 @@ from
 			Courses_hist.EndDate > GETDATE()
     ) t2 on c.CustomerID = t2.CustomerID
     and t1.ServiceID < t2.ServiceID
-    and t1.EndDate > t2.StartDate
-    and t1.StartDate < t2.EndDate;
+    and t1.EndDate >= t2.StartDate
+    and t1.StartDate <= t2.EndDate;

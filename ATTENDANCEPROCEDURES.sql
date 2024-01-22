@@ -31,12 +31,8 @@ BEGIN
     END CATCH;
 END;
 
-
-select * from Order_details
-select * from services 
-select * from studies 
-select * from customers 
 select * from Internships
+go
 CREATE PROCEDURE UpdateInternshipPassed
     @InternshipID INT,
     @CustomerID INT,
@@ -54,6 +50,8 @@ BEGIN
     INSERT INTO Internships_passed (InternshipID, CustomerID, Passed)
     VALUES (@InternshipID, @CustomerID, @Passed);
 END;
+
+go
 
 CREATE PROCEDURE UpdateExams
     @ServiceID INT,
@@ -84,7 +82,7 @@ BEGIN
     VALUES (@ServiceID, @CustomerID, @Grade);
 END;
      
-
+go
 
 
 CREATE PROCEDURE UpdateDiploma
@@ -118,7 +116,7 @@ BEGIN
     VALUES (@ServiceID, @CustomerID, @Date, @Title);
 END;
 
-
+go
 
 CREATE PROCEDURE UpdateCoursesAttendance
 	@ClassID INT,
@@ -138,8 +136,9 @@ BEGIN
     VALUES (@ClassID, @CustomerID,@ModuleID, @Attendance);
 END;
 
+go
 
-CREATE PROCEDURE UpdateWebinarsAtttendance
+CREATE PROCEDURE UpdateWebinarsAttendance
 	@WebinarID  INT,
 	@CustomerID INT,
 	@Attendance varchar(10)
@@ -157,9 +156,9 @@ BEGIN
           AND o.CustomerID = @CustomerID
     )
     BEGIN
-        THROW 50001, 'No matching record in order_details found.', 1;
+		THROW 50001, 'No matching record in order_details found.', 1;
     END
 
 	INSERT INTO Webinars_attendance(WebinarID, CustomerID, Attendance)
 	VALUES(@WebinarID,@CustomerID,@Attendance)
-END
+END;

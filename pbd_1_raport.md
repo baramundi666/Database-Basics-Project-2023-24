@@ -505,6 +505,20 @@ ALTER TABLE Webinars_hist ADD CONSTRAINT Webinars_hist_Webinars
     FOREIGN KEY (ServiceID)
     REFERENCES Webinars (ServiceID);
 ```
+
+#### 4.3.3   Webinars_attendance
+- PK: WebinarID, CustomerID
+- FK: WebinarID, CustomerID
+- Opis: Tabela przechowuje informacje na temat obecności na webinarach
+
+```sql
+CREATE TABLE Webinars_attendance (
+    WebinarID int  NOT NULL,
+    CustomerID int  NOT NULL,
+    Attendance varchar(10)  NOT NULL,
+    CONSTRAINT Webinars_attendance_pk PRIMARY KEY  (CustomerID,WebinarID)
+);
+```
 &nbsp;
 ### 4.3    *Kursy* <a name="crs"></a>
 #### 4.3.1  Courses
@@ -686,38 +700,55 @@ CREATE TABLE Languages (
 ### 1. Raporty finansowe – zestawienie przychodów dla każdego webinaru/kursu/studium.
 
 ```sql
-Create view dbo.FinancialRaport as(
-select Major as Nazwa, sum(Services.PriceWhole) as Przychody, Studies.StartDate as Date
-from Services 
-join Studies 
-on Services.ServiceID = Studies.ServiceID 
+Create view dbo.FinancialRaport as
+select 
+	Major as Nazwa, 
+	sum(Services.PriceWhole) as Przychody,
+	Studies.StartDate as Date
+from 
+	Services 
+	join Studies on Services.ServiceID = Studies.ServiceID 
 group by Major, Services.ServiceID, Studies.StartDate
 
-union all
+union
 
-select Major as Nazwa ,sum(Services.PriceWhole) as Przychody, Lectures.StartDate as Date
-from Services 
-join Single_Studies 
-on Services.ServiceID = Single_Studies.ServiceID 
-join Lectures 
-on Lectures.LectureID = Single_Studies.LectureID
+select 
+	Major as Nazwa,
+	sum(Services.PriceWhole) as Przychody,
+	Lectures.StartDate as Date
+from 
+	Services 
+	join Single_Studies on Services.ServiceID = Single_Studies.ServiceID 
+	join Lectures on Lectures.LectureID = Single_Studies.LectureID
 group by Major, Services.ServiceID, Lectures.StartDate
 
-union all
+union
 
-select WebinarName as Nazwa ,sum(Services.PriceWhole) as Przychody, Webinars.StartDate as Date
-from Services 
-join Webinars 
-on Services.ServiceID = Webinars.ServiceID 
-group by WebinarName, Services.ServiceID, Webinars.StartDate
+select 
+	WebinarName as Nazwa,
+	sum(Services.PriceWhole) as Przychody,
+	Webinars.StartDate as Date
+from 
+	Services 
+	join Webinars on Services.ServiceID = Webinars.ServiceID 
+group by 
+	WebinarName,
+	Services.ServiceID,
+	Webinars.StartDate
 
-union all
+union
 
-select CourseName as Nazwa, sum(Services.PriceWhole) as Przychody, Courses.StartDate as Date
-from Services 
-join Courses 
-on Services.ServiceID = Courses.ServiceID 
-group by CourseName, Services.ServiceID, Courses.StartDate)
+select 
+	CourseName as Nazwa,
+	sum(Services.PriceWhole) as Przychody,
+	Courses.StartDate as Date
+from 
+	Services 
+	join Courses on Services.ServiceID = Courses.ServiceID 
+group by 
+	CourseName,
+	Services.ServiceID,
+	Courses.StartDate;
 ```
 
 ### 2. Lista „dłużników” – osoby, które skorzystały z usług, ale nie uiściły opłat.
@@ -947,132 +978,9 @@ from
     on Courses_attendance.CustomerID = Customers.CustomerID;
 ```
 
-### 6. Raport bilokacji: lista osób, które są zapisane na co najmniej dwa przyszłe szkolenia, które ze sobą kolidują czasowo.
-
-```sql
-CREATE VIEW BilocationReport AS
-SELECT
-    c.CustomerID,
-    c.FirstName,
-    c.LastName,
-    t1.ServiceID AS Service1ID,
-    t1.ServiceType AS Service1Type,
-    t1.StartDate AS Service1StartDate,
-    t1.EndDate AS Service1EndDate,
-    t2.ServiceID AS Service2ID,
-    t2.ServiceType AS Service2Type,
-    t2.StartDate AS Service2StartDate,
-    t2.EndDate AS Service2EndDate
-FROM
-    Customers c
-    JOIN (
-        SELECT
-            Lectures_attendance.CustomerID,
-            Lectures.ServiceID AS ServiceID,
-            'Studies' AS ServiceType,
-            Lectures.StartDate,
-            Lectures.EndDate
-        FROM Studies
-		join Lectures on Lectures.ServiceID = Studies.ServiceID
-		join Lectures_attendance on Lectures.LectureID = Lectures_attendance.LectureID
-        WHERE Lectures.EndDate > GETDATE()
-
-        UNION
-
-        SELECT
-            la.CustomerID,
-            lh.ServiceID AS ServiceID,
-            'Single_Studies' AS ServiceType,
-            lh.StartDate,
-            lh.EndDate
-        FROM Lectures_attendance la
-        INNER JOIN Lectures lh ON la.LectureID = lh.LectureID
-        WHERE lh.EndDate > GETDATE()
-
-        UNION 
-
-        SELECT
-            wa.CustomerID,
-            wh.ServiceID AS ServiceID,
-            'Webinars' AS ServiceType,
-            wh.StartDate,
-            wh.EndDate
-        FROM Webinars_attendance wa
-        JOIN Webinars_hist wh ON wa.WebinarID = wh.WebinarID
-        WHERE wh.EndDate > GETDATE()
-
-        UNION 
-
-        SELECT
-            Courses_attendance.CustomerID,
-            Modules.ServiceID AS ServiceID,
-            'Courses' AS ServiceType,
-            Courses_hist.StartDate,
-            Courses_hist.EndDate
-        FROM Courses_attendance
-        JOIN Courses_hist ON Courses_attendance.ClassID = Courses_hist.ClassID
-		join Modules on Modules.ModuleID = Courses_hist.ModuleID
-        WHERE Courses_hist.EndDate > GETDATE()
-    ) t1 ON c.CustomerID = t1.CustomerID
-
-    JOIN (
-        SELECT
-            Lectures_attendance.CustomerID,
-            Lectures.ServiceID AS ServiceID,
-            'Studies' AS ServiceType,
-            Lectures.StartDate,
-            Lectures.EndDate
-        FROM Studies
-		join Lectures on Lectures.ServiceID = Studies.ServiceID
-		join Lectures_attendance on Lectures.LectureID = Lectures_attendance.LectureID
-        WHERE Lectures.EndDate > GETDATE()
-
-        UNION ALL
-
-        SELECT
-            la.CustomerID,
-            lh.ServiceID AS ServiceID,
-            'Single_Studies' AS ServiceType,
-            lh.StartDate,
-            lh.EndDate
-        FROM Lectures_attendance la
-        INNER JOIN Lectures lh ON la.LectureID = lh.LectureID
-        WHERE lh.EndDate > GETDATE()
-
-        UNION ALL
-
-        SELECT
-            wa.CustomerID,
-            wh.ServiceID AS ServiceID,
-            'Webinars' AS ServiceType,
-            wh.StartDate,
-            wh.EndDate
-        FROM Webinars_attendance wa
-        INNER JOIN Webinars_hist wh ON wa.WebinarID = wh.WebinarID
-        WHERE wh.EndDate > GETDATE()
-
-        UNION ALL
-
-        SELECT
-            ca.CustomerID,
-            Modules.ServiceID AS ServiceID,
-            'Courses' AS ServiceType,
-            Courses_hist.StartDate,
-            Courses_hist.EndDate
-        FROM Courses_attendance ca
-        INNER JOIN Courses_hist ON ca.ClassID = Courses_hist.ClassID
-		join Modules on Modules.ModuleID = Courses_hist.ModuleID
-        WHERE Courses_hist.EndDate > GETDATE()
-    ) t2 ON c.CustomerID = t2.CustomerID
-    AND t1.ServiceID < t2.ServiceID
-    AND t1.EndDate > t2.StartDate
-    AND t1.StartDate < t2.EndDate;
-```
-
 ## 6. Funkcje <a name="funkcje"></a>
 
 ### 1. Koszyk studenta
- - Parametr: CustomerID
 
 ```sql
 CREATE FUNCTION GetCustomerCart (@CustomerID INT)
@@ -1084,7 +992,6 @@ RETURN (
 )
 ```
 ### 2. Harmonogram studiów
- - Parametr: ServiceID
 
 ```sql
 CREATE FUNCTION GetStudiesSchedule (@ServiceID INT)
@@ -1096,7 +1003,7 @@ RETURN (
 )
 ```
 ### 3. Harmonogram przyszłych zajęć dla użytkownika
- - Parametr: CustomerID
+
 ```sql
 CREATE FUNCTION GetCustomerSchedule (@CustomerID INT)
 RETURNS TABLE
@@ -1134,7 +1041,7 @@ RETURN (
 );
 ```
 
-### 3. Sprawdza czy zajęcia kursu mieści się w ramach czasowych kursu
+### 4. Sprawdza czy zajęcia kursu mieści się w ramach czasowych kursu
 
 ```sql
 CREATE FUNCTION CheckClassDates
@@ -1165,7 +1072,7 @@ BEGIN
     RETURN @IsValid;
 END;
 ```
-### 4. Sprawdza czy wykład mieści się w ramach czasowych trwania studiów
+### 5. Sprawdza czy wykład mieści się w ramach czasowych trwania studiów
 
 ```sql
 CREATE FUNCTION dbo.CheckLectureDates
@@ -1194,7 +1101,7 @@ BEGIN
 END;
 ```
 
-### 5. Sprawdza czy limit miejsc na pojedynczych zajęciach studyjnych mieści się w zakresie możliwych wartości
+### 6. Sprawdza czy limit miejsc na pojedynczych zajęciach studyjnych mieści się w zakresie możliwych wartości
 
 ```sql
 CREATE FUNCTION dbo.CheckLimitForSingleStudies
@@ -1224,7 +1131,7 @@ BEGIN
 END;
 ```
 
-### 6. Sprawdza czy użytkownik posiada obecnie coś w koszyku
+### 7. Sprawdza czy użytkownik posiada obecnie coś w koszyku
 
 ```sql
 CREATE FUNCTION IsThereCart (@CustomerID INT)
@@ -1242,7 +1149,7 @@ BEGIN
 END;
 ```
 
-### 7. Sprawdza czy usługa posiada wolne miejsca na dowolne wydarzenie - czy można się na nie zapisać
+### 8. Sprawdza czy usługa posiada wolne miejsca na dowolne wydarzenie - czy można się na nie zapisać
 
 ```sql
 CREATE FUNCTION checklimit(@ServiceID INT)
@@ -1255,7 +1162,6 @@ BEGIN
     SET @ModResult = @ServiceID % 4;
 	DECLARE @Limit INT;
 
-   
 
     IF @ModResult = 1
     BEGIN
@@ -1298,8 +1204,114 @@ BEGIN
 END;
 ```
 
-### 8.
-                                                                                        
+### 9. Sprawdza czy użytkownik jest zapisany na zajęcia kursu
+
+```sql
+CREATE FUNCTION CoursesIntegrity
+(
+    @ClassID INT,
+    @CustomerID INT
+)
+RETURNS INT
+AS
+BEGIN
+    DECLARE @Course INT;
+
+    SELECT @Course = m.ServiceID
+    FROM Courses_hist ch 
+	join Modules m
+	on ch.ModuleID = m.ModuleID
+    WHERE ch.ClassID = @ClassID;
+	IF @Course % 4 <> 3
+	BEGIN
+		RETURN 0;
+	END;
+    IF EXISTS (
+        SELECT 1
+        FROM Order_Details od
+		join Orders o
+		ON o.OrderID = od.OrderID
+        WHERE od.ServiceID = @Course
+          AND o.CustomerID = @CustomerID
+    )
+    BEGIN
+        RETURN 1;
+    END
+        RETURN 0;
+
+END;
+```
+
+### 10. Sprawdza czy użytkownik jest zapisany na staż
+
+```sql
+CREATE FUNCTION InternshipsIntegrity
+(
+    @InternshipID INT,
+    @CustomerID INT
+)
+RETURNS INT
+AS
+BEGIN
+    DECLARE @Studies INT;
+
+    SELECT @Studies = ServiceID
+    FROM Internships
+    WHERE InternshipID = @InternshipID;
+
+    IF EXISTS (
+        SELECT 1
+        FROM Order_Details od
+		join Orders o
+		ON o.OrderID = od.OrderID
+        WHERE od.ServiceID = @Studies
+          AND o.CustomerID = @CustomerID
+    )
+    BEGIN
+        RETURN 1;
+    END
+        RETURN 0;
+
+END;
+```
+
+### 11. Sprawdza czy użytkownik jest zapisany na wykład
+
+```sql
+CREATE FUNCTION LecturesAttendanceCheckIntegrity
+(
+    @CustomerID INT,
+    @LectureID INT
+)
+RETURNS INT
+AS
+BEGIN
+    DECLARE @Studies INT;
+    DECLARE @SingleStudies INT;
+    SELECT @Studies = ServiceID
+    FROM Lectures
+    WHERE LectureID = @LectureID;
+    SELECT @SingleStudies = ServiceID
+    FROM Single_Studies
+    WHERE LectureID = @LectureID;
+
+    IF EXISTS (
+        SELECT 1
+        FROM Order_details od
+		join orders o
+		on od.OrderID = o.OrderID
+        WHERE o.CustomerID = @CustomerID
+          AND (od.ServiceID = @Studies OR od.ServiceID = @SingleStudies)
+    )
+    BEGIN
+        RETURN 1;
+    END
+  
+        RETURN 0;
+
+END;
+```
+
 ## 7.	Procedury <a name="procedury"></a>
 
 ### 1. Dodanie klienta
