@@ -28,7 +28,7 @@ BEGIN
     RETURN @IsValid;
 END;
 
-
+go
 -- Create a function to check if lecture dates correspond to study dates
 CREATE FUNCTION dbo.CheckLectureDates
 (
@@ -102,7 +102,7 @@ BEGIN
 
     RETURN @CartOrderID;
 END;
-
+go
 
 CREATE FUNCTION checklimit(@ServiceID INT)
 RETURNS BIT
