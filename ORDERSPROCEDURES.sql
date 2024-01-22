@@ -47,11 +47,7 @@ BEGIN
     END CATCH;
 END;
 
-select * from services
--- Example EXEC statement for AddToCart procedure
-EXEC AddToCart
-    @CustomerID = 4, -- Replace with a valid CustomerID from your database
-    @ServiceID = 3;  -- Replace with a valid ServiceID from your database
+GO
 
 
 
@@ -99,10 +95,7 @@ BEGIN
 END;
 
 
--- Example EXEC statement for DeleteFromCart procedure
-EXEC DeleteFromCart
-    @CustomerID = 2, -- Replace with a valid CustomerID from your database
-    @ServiceID = 2;  -- Replace with a valid ServiceID from your database
+GO
 
 
 -- Create a procedure to process the purchase of items in the cart
@@ -175,18 +168,9 @@ BEGIN
         THROW;
     END CATCH;
 END;
-
-select * from Order_details
-
+GO
 
 
-
-select * from customers
-EXEC UpdateBalance @CustomerID = 4, @Amount =1800.00;
-EXEC  BuyCart @CustomerID = 4;
-select * from orders
-select * from customers
-select * from Order_details
 
 CREATE PROCEDURE UpdateBalance
     @CustomerID INT,
@@ -253,6 +237,8 @@ BEGIN
         THROW;
     END CATCH;
 END;
+
+GO
 
 CREATE PROCEDURE BuyNow
     @CustomerID INT,

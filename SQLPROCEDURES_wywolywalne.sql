@@ -526,7 +526,7 @@ BEGIN
         END
 
         -- Check if the ServiceID exists
-        IF NOT EXISTS (SELECT 1 FROM Services WHERE ServiceID = @ServiceID)
+        IF NOT EXISTS (SELECT 1 FROM Studies WHERE ServiceID = @ServiceID)
         BEGIN
             THROW 50003, 'Service with the provided ID does not exist.', 1;
         END
@@ -677,7 +677,7 @@ BEGIN
         -- Re-throw the error
         THROW;
     END CATCH;
-END;
+END;									
 
 
 

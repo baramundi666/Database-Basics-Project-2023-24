@@ -124,8 +124,8 @@ CREATE TABLE Orders (
 	DueDate > OrderDate
 	),
 	CONSTRAINT OrdersPaymentCheck CHECK (
-	PaymentAssesed > 0 AND
-	PaymentPaid > 0 AND
+	PaymentAssesed >= 0 AND
+	PaymentPaid >= 0 AND
 	PaymentWaived >= 0 AND
 	PaymentAssesed >= PaymentPaid
 	)
@@ -1134,6 +1134,172 @@ RETURN (
 );
 ```
 
+### 3. Sprawdza czy zajęcia kursu mieści się w ramach czasowych kursu
+
+```sql
+CREATE FUNCTION CheckClassDates
+(
+    @ModuleID int,
+    @StartDateOfClass datetime,
+    @EndDateOfClass datetime
+)
+RETURNS bit
+AS
+BEGIN
+    DECLARE @IsValid bit = 0;
+
+    DECLARE @CourseStartDate datetime;
+    DECLARE @CourseEndDate datetime;
+
+    SELECT @CourseStartDate = c.StartDate, @CourseEndDate = c.EndDate
+    FROM Modules m
+    INNER JOIN Courses c ON m.ServiceID = c.ServiceID
+    WHERE m.ModuleID = @ModuleID;
+
+
+    IF @StartDateOfClass >= @CourseStartDate AND @EndDateOfClass <= @CourseEndDate
+    BEGIN
+        SET @IsValid = 1;
+    END
+
+    RETURN @IsValid;
+END;
+```
+### 4. Sprawdza czy wykład mieści się w ramach czasowych trwania studiów
+
+```sql
+CREATE FUNCTION dbo.CheckLectureDates
+(
+    @ServiceID int,
+    @StartDate datetime,
+    @EndDate datetime
+)
+RETURNS BIT
+AS
+BEGIN
+    DECLARE @IsValid BIT = 0;
+
+    IF EXISTS (
+        SELECT 1
+        FROM Studies s
+        WHERE s.ServiceID = @ServiceID
+          AND @StartDate >= s.StartDate
+          AND @EndDate <= s.EndDate
+    )
+    BEGIN
+        SET @IsValid = 1;
+    END
+
+    RETURN @IsValid;
+END;
+```
+
+### 5. Sprawdza czy limit miejsc na pojedynczych zajęciach studyjnych mieści się w zakresie możliwych wartości
+
+```sql
+CREATE FUNCTION dbo.CheckLimitForSingleStudies
+(
+    @LectureID int,
+    @Limit int
+)
+RETURNS BIT
+AS
+BEGIN
+    DECLARE @IsValid BIT = 1;
+    IF @Limit IS NOT NULL
+    BEGIN
+        IF EXISTS (
+            SELECT 1
+            FROM Lectures l
+            LEFT JOIN Studies s ON l.ServiceID = s.ServiceID
+            WHERE l.LectureID = @LectureID
+              AND @Limit > (l.Limit - ISNULL(s.Limit, 0))
+        )
+        BEGIN
+            SET @IsValid = 0;
+        END
+    END
+
+    RETURN @IsValid;
+END;
+```
+
+### 6. Sprawdza czy użytkownik posiada obecnie coś w koszyku
+
+```sql
+CREATE FUNCTION IsThereCart (@CustomerID INT)
+RETURNS INT
+AS
+BEGIN
+    DECLARE @CartOrderID INT;
+
+    SELECT @CartOrderID = OrderID
+    FROM Orders
+    WHERE CustomerID = @CustomerID
+      AND OrderStatus = 'InCart';
+
+    RETURN @CartOrderID;
+END;
+```
+
+### 7. Sprawdza czy usługa posiada wolne miejsca na dowolne wydarzenie - czy można się na nie zapisać
+
+```sql
+CREATE FUNCTION checklimit(@ServiceID INT)
+RETURNS BIT
+AS
+BEGIN
+    DECLARE @ModResult INT;
+    DECLARE @OrderCount INT;
+
+    SET @ModResult = @ServiceID % 4;
+	DECLARE @Limit INT;
+
+   
+
+    IF @ModResult = 1
+    BEGIN
+        RETURN 1; 
+    END
+    ELSE
+    SELECT @OrderCount = COUNT(*)
+    FROM Order_details od
+    WHERE od.ServiceID = @ServiceID and  od.UnitPrice >0 ;
+	BEGIN
+        IF @ModResult = 2
+        BEGIN
+
+            SELECT @Limit = s.Limit
+            FROM Studies s
+            WHERE s.ServiceID = @ServiceID;
+
+            RETURN CASE WHEN @OrderCount < @Limit THEN 1 ELSE 0 END;
+        END
+        ELSE IF @ModResult = 3
+        BEGIN
+
+            SELECT @Limit = c.Limit
+            FROM Courses c
+            WHERE c.ServiceID = @ServiceID;
+
+            RETURN CASE WHEN @OrderCount < @Limit THEN 1 ELSE 0 END;
+        END
+        ELSE IF @ModResult = 0
+        BEGIN
+            SELECT @Limit = ss.Limit
+            FROM Single_Studies ss
+            WHERE ss.ServiceID = @ServiceID;
+
+            RETURN CASE WHEN @OrderCount < @Limit THEN 1 ELSE 0 END;
+        END
+        RETURN 0;
+        
+    END
+END;
+```
+
+### 8.
+                                                                                        
 ## 7.	Procedury <a name="procedury"></a>
 
 ### 1. Dodanie klienta
@@ -1145,19 +1311,12 @@ CREATE PROCEDURE AddCustomer
     @Balance MONEY,
     @Email VARCHAR(50),
     @City VARCHAR(50),
-    @Street VARCHAR(50),
-    @Address VARCHAR(10),
-    @PostalCode VARCHAR(10)
+    @Address VARCHAR(50),
+    @PostalCode VARCHAR(50)
 AS
 BEGIN
-    DECLARE @NextCustomerID INT;
-
-    SELECT @NextCustomerID = ISNULL(MAX(CustomerID), 0) + 1 FROM Customers;
-
-    INSERT INTO Customers (CustomerID, FirstName, LastName, Balance, Email, City, Street, Address, PostalCode)
-    VALUES (@NextCustomerID, @FirstName, @LastName, @Balance, @Email, @City, @Street, @Address, @PostalCode);
-
-    PRINT 'Klient dodany pomyślnie.'
+    INSERT INTO Customers (FirstName, LastName, Balance, Email, City, Address, PostalCode)
+    VALUES (@FirstName, @LastName, @Balance, @Email, @City, @Address, @PostalCode);
 END;
 ```
 
@@ -1169,14 +1328,8 @@ CREATE PROCEDURE AddLecturer
     @LastName VARCHAR(50)
 AS
 BEGIN
-    DECLARE @NextLecturerID INT;
-
-    SELECT @NextLecturerID = ISNULL(MAX(LecturerID), 0) + 1 FROM Lecturers;
-
-    INSERT INTO Lecturers (LecturerID, FirstName, LastName)
-    VALUES (@NextLecturerID, @FirstName, @LastName);
-
-    PRINT 'Wykładowca dodany pomyślnie.';
+    INSERT INTO Lecturers (FirstName, LastName)
+    VALUES (@FirstName, @LastName);
 END;
 ```
 
@@ -1185,18 +1338,11 @@ END;
 ```sql
 CREATE PROCEDURE AddTranslator
     @FirstName VARCHAR(50),
-    @LastName VARCHAR(50),
-    @Language VARCHAR(50)
+    @LastName VARCHAR(50)
 AS
 BEGIN
-    DECLARE @NextTranslatorID INT;
-
-    SELECT @NextTranslatorID = ISNULL(MAX(TranslatorID), 0) + 1 FROM Translator;
-
-    INSERT INTO Translator (TranslatorID, FirstName, LastName, Language)
-    VALUES (@NextTranslatorID, @FirstName, @LastName, @Language);
-
-    PRINT 'Translator dodany pomyślnie.';
+    INSERT INTO Translator (FirstName, LastName)
+    VALUES (@FirstName, @LastName);
 END;
 ```
 
@@ -1204,184 +1350,832 @@ END;
 
 ```sql
 CREATE PROCEDURE AddWebinar
-    @WebinarName VARCHAR(50),
-    @Date DATETIME,
-    @PriceInAdvance MONEY,
-    @PriceWhole MONEY,
-    @TranslatorID INT,
-    @LecturerID INT
+    @WebinarName varchar(50),
+    @StartDate datetime,
+    @EndDate datetime,
+    @PriceInAdvance money,
+    @PriceWhole money,
+    @LecturerID int,
+    @TranslatorID int,
+    @LinkNagranie varchar(50) = NULL
 AS
 BEGIN
-    DECLARE @NextServiceID INT;
+    BEGIN TRANSACTION;
 
-    IF @LecturerID IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Lecturers WHERE LecturerID = @LecturerID)
-    BEGIN
-        PRINT 'Błąd: Nieprawidłowy LecturerID.';
-        RETURN;
-    END
+    BEGIN TRY
+        IF NOT EXISTS (SELECT 1 FROM Lecturers WHERE LecturerID = @LecturerID)
+        BEGIN
+            THROW 50002, 'Lecturer with provided ID does not exist.', 1;
+        END
 
-    IF @TranslatorID IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Translator WHERE TranslatorID = @TranslatorID)
-    BEGIN
-        PRINT 'Błąd: Nieprawidłowy TranslatorID.';
-        RETURN;
-    END
+        IF NOT EXISTS (SELECT 1 FROM Translator WHERE TranslatorID = @TranslatorID)
+        BEGIN
+            THROW 50003, 'Translator with provided ID does not exist.', 1;
+        END
 
-    SELECT @NextServiceID = ISNULL(MAX(ServiceID), -3) + 4 FROM Webinars;
+		SET IDENTITY_INSERT Webinars ON
 
-    INSERT INTO Services (ServiceID, PriceInAdvance, PriceWhole)
-    VALUES (@NextServiceID, @PriceInAdvance, @PriceWhole);
+		DECLARE @NewServiceID INT;
+		SELECT @NewServiceID = ISNULL(MAX(ServiceID),-3) +4 FROM Webinars;
 
-    INSERT INTO Webinars (ServiceID, WebinarName, Date, PriceInAdvance, PriceWhole)
-    VALUES (@NextServiceID, @WebinarName, @Date, @PriceInAdvance, @PriceWhole);
+        INSERT INTO Services (ServiceID, PriceInAdvance, PriceWhole)
+        VALUES (@NewServiceID, @PriceInAdvance, @PriceWhole);
 
-    INSERT INTO Webinars_hist (ServiceID, TranslatorID, LecturerID, Date, LinkNagranie)
-    VALUES (@NextServiceID, @TranslatorID, @LecturerID, @Date, '');
+        INSERT INTO Webinars (ServiceID,WebinarName, StartDate, EndDate, PriceInAdvance, PriceWhole)
+        VALUES (@NewServiceID,@WebinarName, @StartDate, @EndDate, @PriceInAdvance, @PriceWhole);
 
-    PRINT 'Webinar dodany pomyślnie.';
+        INSERT INTO Webinars_hist (ServiceID, LecturerID, TranslatorID, StartDate, EndDate, LinkNagranie)
+        VALUES (@NewServiceID, @LecturerID, @TranslatorID, @StartDate, @EndDate, @LinkNagranie);
+		SET IDENTITY_INSERT Webinars OFF
+        COMMIT;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK;
+        THROW;
+    END CATCH;
 END;
 ```
 
-### 5. Dodanie przedmiotu
+### 5. Dodanie kursu
+
+```sql
+CREATE PROCEDURE AddCourse
+    @CourseName varchar(50),
+    @Type varchar(20),
+    @StartDate datetime,
+    @EndDate datetime,
+    @PriceInAdvance money,
+    @PriceWhole money,
+    @Limit int = NULL
+AS
+BEGIN
+    BEGIN TRANSACTION;
+
+    BEGIN TRY
+		SET IDENTITY_INSERT Courses ON
+        
+        DECLARE @NewServiceID INT;
+        SELECT @NewServiceID = ISNULL(MAX(ServiceID),-1) +4 from Courses;
+
+        INSERT INTO Services (ServiceID,PriceInAdvance, PriceWhole)
+        VALUES (@NewServiceID,@PriceInAdvance, @PriceWhole);
+
+
+        INSERT INTO Courses (ServiceID, CourseName, Type, StartDate, EndDate, PriceInAdvance, PriceWhole, Limit)
+        VALUES (@NewServiceID, @CourseName, @Type, @StartDate, @EndDate, @PriceInAdvance, @PriceWhole, @Limit);
+
+		SET IDENTITY_INSERT Courses OFF
+
+        COMMIT;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK;
+        THROW;
+    END CATCH;
+END;
+```
+
+### 6. Dodanie Modułu
+
+```sql
+CREATE PROCEDURE AddModule
+    @ServiceID int,
+    @ModuleName varchar(50)
+AS
+BEGIN
+    BEGIN TRANSACTION;
+
+    BEGIN TRY
+        IF NOT EXISTS (SELECT 1 FROM Courses WHERE ServiceID = @ServiceID)
+        BEGIN
+            THROW 50001, 'Course with provided ServiceID does not exist.', 1;
+        END
+
+        INSERT INTO Modules (ServiceID, ModuleName)
+        VALUES (@ServiceID, @ModuleName);
+
+        COMMIT;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK;
+        THROW;
+    END CATCH;
+END;
+```
+
+### 7. Dodanie elementu do Course_hist
+
+```sql
+CREATE PROCEDURE AddClassCourse
+    @ModuleID int,
+    @LecturerID int,
+    @TranslatorID int,
+    @StartDate datetime,
+    @EndDate datetime,
+	@Type varchar(10),
+    @LinkNagranie varchar(50) = NULL
+AS
+BEGIN
+    BEGIN TRANSACTION;
+
+    BEGIN TRY
+        IF NOT EXISTS (SELECT 1 FROM Modules WHERE ModuleID = @ModuleID)
+        BEGIN
+            THROW 50001, 'Module with provided ModuleID does not exist.', 1;
+        END
+
+        IF NOT EXISTS (SELECT 1 FROM Lecturers WHERE LecturerID = @LecturerID)
+        BEGIN
+            THROW 50002, 'Lecturer with provided LecturerID does not exist.', 1;
+        END
+
+        IF NOT EXISTS (SELECT 1 FROM Translator WHERE TranslatorID = @TranslatorID)
+        BEGIN
+            THROW 50003, 'Translator with provided TranslatorID does not exist.', 1;
+        END
+		Declare @checkClassDates bit 
+		Select @checkClassDates =  dbo.CheckClassDates(@ModuleID, @StartDate, @EndDate)
+        IF   @checkClassDates = 0 
+        BEGIN
+            THROW 50004, 'Class dates are not within the valid range for the associated course.', 1;
+        END
+
+        INSERT INTO Courses_hist (ModuleID, LecturerID, TranslatorID, StartDate, EndDate, Type, LinkNagranie)
+        VALUES (@ModuleID, @LecturerID, @TranslatorID, @StartDate, @EndDate, @Type, @LinkNagranie);
+
+        COMMIT;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK;
+        THROW;
+    END CATCH;
+END;
+```
+
+### 8. Dodanie Języka
+
+```sql
+CREATE PROCEDURE AddLanguage
+    @LanguageName varchar(50)
+AS
+BEGIN
+    BEGIN TRANSACTION;
+
+    BEGIN TRY
+        IF EXISTS (SELECT 1 FROM Languages WHERE LanguageName = @LanguageName)
+        BEGIN
+            THROW 50001, 'Language with the provided name already exists.', 1;
+        END
+
+
+        INSERT INTO Languages (LanguageName)
+        VALUES (@LanguageName);
+
+        COMMIT;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK;
+
+        THROW;
+    END CATCH;
+END;
+```
+
+### 9. Dodanie połączenia między tłumaczem a językiem
+
+```sql
+CREATE PROCEDURE AddTranslatorLanguage
+    @TranslatorID int,
+    @LanguageID int
+AS
+BEGIN
+    BEGIN TRANSACTION;
+
+    BEGIN TRY
+        IF NOT EXISTS (SELECT 1 FROM Translator WHERE TranslatorID = @TranslatorID)
+        BEGIN
+            THROW 50001, 'Translator with the provided ID does not exist.', 1;
+        END
+
+
+        IF NOT EXISTS (SELECT 1 FROM Languages WHERE LanguageID = @LanguageID)
+        BEGIN
+            THROW 50002, 'Language with the provided ID does not exist.', 1;
+        END
+
+
+        IF EXISTS (SELECT 1 FROM Translator_details WHERE TranslatorID = @TranslatorID AND LanguageID = @LanguageID)
+        BEGIN
+            THROW 50003, 'Translator already has the specified language.', 1;
+        END
+
+        INSERT INTO Translator_details (TranslatorID, LanguageID)
+        VALUES (@TranslatorID, @LanguageID);
+
+        COMMIT;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK;
+
+        THROW;
+    END CATCH;
+END;
+```
+
+### 10. Dodanie przedmiotu
 
 ```sql
 CREATE PROCEDURE AddSubject
-    @SubjectName VARCHAR(50),
-    @SubjectDescription INT,
-    @Hours INT,
-    @Assessment INT,
-    @LecturerID INT
+    @LecturerID int,
+    @SubjectName varchar(50),
+    @SubjectDescription varchar(200),
+    @Hours int,
+    @Assessment varchar(30)
 AS
 BEGIN
-    DECLARE @NextSubjectID INT;
+    BEGIN TRANSACTION;
 
-    IF @LecturerID IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Lecturers WHERE LecturerID = @LecturerID)
-    BEGIN
-        PRINT 'Błąd: Nieprawidłowy LecturerID.';
-        RETURN;
-    END
+    BEGIN TRY
 
-    SELECT @NextSubjectID = ISNULL(MAX(SubjectID), 0) + 1 FROM Subjects;
+        IF NOT EXISTS (SELECT 1 FROM Lecturers WHERE LecturerID = @LecturerID)
+        BEGIN
+            THROW 50001, 'Lecturer with the provided ID does not exist.', 1;
+        END
 
-    INSERT INTO Subjects (SubjectID, LecturerID, SubjectName, SubjectDescription, Hours, Assessment)
-    VALUES (@NextSubjectID, @LecturerID, @SubjectName, @SubjectDescription, @Hours, @Assessment);
 
-    PRINT 'Przedmiot dodany pomyślnie. Przydzielony SubjectID: ' + CAST(@NextSubjectID AS VARCHAR);
+        INSERT INTO Subjects (LecturerID, SubjectName, SubjectDescription, Hours, Assessment)
+        VALUES (@LecturerID, @SubjectName, @SubjectDescription, @Hours, @Assessment);
+
+        COMMIT;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK;
+
+        THROW;
+    END CATCH;
 END;
 ```
 
-### 6. Dodanie Syllabusa
+### 11. Dodanie Syllabusu
 
 ```sql
 CREATE PROCEDURE AddSyllabus
-    @SubjectID INT,
-    @SyllabusName VARCHAR(50)
+    @SyllabusName varchar(50)
 AS
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM Subjects WHERE SubjectID = @SubjectID)
-    BEGIN
-        PRINT 'Błąd: Podane SubjectID nie istnieje.';
-        RETURN;
-    END
+    BEGIN TRANSACTION;
 
-    DECLARE @NextSyllabusID INT;
+    BEGIN TRY
 
-    SELECT @NextSyllabusID = ISNULL(MAX(SyllabusID), 0) + 1 FROM Syllabus;
+        IF EXISTS (SELECT 1 FROM Syllabus WHERE SyllabusName = @SyllabusName)
+        BEGIN
+            THROW 50001, 'Syllabus with the provided name already exists.', 1;
+        END
 
-    INSERT INTO Syllabus (SyllabusID, SubjectID, SyllabusName)
-    VALUES (@NextSyllabusID, @SubjectID, @SyllabusName);
 
-    PRINT 'Plan studiów dodany pomyślnie.';
+        INSERT INTO Syllabus (SyllabusName)
+        VALUES (@SyllabusName);
+
+
+        COMMIT;
+    END TRY
+    BEGIN CATCH
+
+        ROLLBACK;
+
+        THROW;
+    END CATCH;
 END;
 ```
 
-### 7. Dodanie studiów
+### 12. Dodanie połączeń między Syllabusami a przedmiotami
+
+```sql
+CREATE PROCEDURE AddSyllabusDetails
+    @SyllabusID int,
+    @SubjectID int
+AS
+BEGIN
+    BEGIN TRANSACTION;
+
+    BEGIN TRY
+        IF NOT EXISTS (SELECT 1 FROM Syllabus WHERE SyllabusID = @SyllabusID)
+        BEGIN
+            THROW 50001, 'Syllabus with the provided ID does not exist.', 1;
+        END
+
+        IF NOT EXISTS (SELECT 1 FROM Subjects WHERE SubjectID = @SubjectID)
+        BEGIN
+            THROW 50002, 'Subject with the provided ID does not exist.', 1;
+        END
+
+
+        IF EXISTS (SELECT 1 FROM Syllabus_details WHERE SyllabusID = @SyllabusID AND SubjectID = @SubjectID)
+        BEGIN
+            THROW 50003, 'Subject is already associated with the specified syllabus.', 1;
+        END
+
+        INSERT INTO Syllabus_details (SyllabusID, SubjectID)
+        VALUES (@SyllabusID, @SubjectID);
+
+        COMMIT;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK;
+
+        THROW;
+    END CATCH;
+END;
+```
+
+### 13. Dodanie studiów
 
 ```sql
 CREATE PROCEDURE AddStudies
-    @SyllabusID INT,
-    @Major VARCHAR(50),
-    @StartDate DATE,
-    @EndDate DATE,
-    @PriceInAdvance MONEY,
-    @PriceWhole MONEY
+    @SyllabusID int,
+    @Major varchar(50),
+    @StartDate datetime,
+    @EndDate datetime,
+    @PriceInAdvance money,
+    @PriceWhole money,
+    @Limit int
 AS
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM Syllabus WHERE SyllabusID = @SyllabusID)
-    BEGIN
-        PRINT 'Błąd: Podane SyllabusID nie istnieje.';
-        RETURN;
-    END
+    BEGIN TRANSACTION;
 
-    DECLARE @NextServiceID INT;
+    BEGIN TRY
+        IF NOT EXISTS (SELECT 1 FROM Syllabus WHERE SyllabusID = @SyllabusID)
+        BEGIN
+            THROW 50001, 'Syllabus with the provided ID does not exist.', 1;
+        END
+		SET IDENTITY_INSERT Studies ON
+        DECLARE @NewServiceID INT;
+        SELECT @NewServiceID = ISNULL(MAX(ServiceID), -2) + 4 FROM Studies;
 
-    SELECT @NextServiceID = ISNULL(MAX(ServiceID), -2) + 4 FROM Studies;
+        INSERT INTO Services (ServiceID, PriceInAdvance, PriceWhole)
+        VALUES (@NewServiceID, @PriceInAdvance, @PriceWhole);
 
-    INSERT INTO Services (ServiceID, PriceInAdvance, PriceWhole)
-    VALUES (@NextServiceID, @PriceInAdvance, @PriceWhole);
+        INSERT INTO Studies (ServiceID, SyllabusID, Major, StartDate, EndDate, PriceInAdvance, PriceWhole, Limit)
+        VALUES (@NewServiceID, @SyllabusID, @Major, @StartDate, @EndDate, @PriceInAdvance, @PriceWhole, @Limit);
 
-    INSERT INTO Studies (ServiceID, SyllabusID, Major, StartDate, EndDate, PriceInAdvance, PriceWhole)
-    VALUES (@NextServiceID, @SyllabusID, @Major, @StartDate, @EndDate, @PriceInAdvance, @PriceWhole);
+		SET IDENTITY_INSERT Studies OFF
 
-    PRINT 'Studia dodane pomyślnie.';
+
+        COMMIT;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK;
+
+        THROW;
+    END CATCH;
 END;
 ```
 
-### 8. Dodanie stażu
+### 14. Dodanie wykładu
+
+```sql
+CREATE PROCEDURE AddLecture
+    @LecturerID int,
+    @TranslatorID int,
+    @ServiceID int,
+    @Type varchar(20),
+    @Language varchar(50),
+    @StartDate datetime,
+    @EndDate datetime,
+    @Limit int,
+    @LinkNagranie varchar(50) = NULL
+AS
+BEGIN
+    BEGIN TRANSACTION;
+
+    BEGIN TRY
+        IF NOT EXISTS (SELECT 1 FROM Lecturers WHERE LecturerID = @LecturerID)
+        BEGIN
+            THROW 50001, 'Lecturer with the provided ID does not exist.', 1;
+        END
+
+        IF NOT EXISTS (SELECT 1 FROM Translator WHERE TranslatorID = @TranslatorID)
+        BEGIN
+            THROW 50002, 'Translator with the provided ID does not exist.', 1;
+        END
+
+
+        IF NOT EXISTS (SELECT 1 FROM Studies WHERE ServiceID = @ServiceID)
+        BEGIN
+            THROW 50003, 'Service with the provided ID does not exist.', 1;
+        END
+
+        IF NOT EXISTS (SELECT 1 FROM Languages WHERE LanguageName = @Language)
+        BEGIN
+            THROW 50004, 'provvided language doesnt exist.', 1;
+        END
+		Declare  @checkDates bit
+		SELECT @checkDates = dbo.CheckLectureDates(@ServiceID, @StartDate, @EndDate)
+        IF  @checkDates = 0
+        BEGIN
+            THROW 50005, 'Lecture dates do not correspond to study dates.', 1;
+        END
+
+		IF @Limit IS NOT NULL AND EXISTS (
+            SELECT 1
+            FROM Studies s
+            INNER JOIN Lectures l ON s.ServiceID = l.ServiceID
+            WHERE l.LectureID = @ServiceID
+              AND @Limit < s.Limit
+        )
+        BEGIN
+            THROW 50006, 'Limit should be greater than or equal to the limit of connected studies.', 1;
+        END
+
+        INSERT INTO Lectures (LecturerID, TranslatorID, ServiceID, Type, Language, StartDate, EndDate, Limit, LinkNagranie)
+        VALUES (@LecturerID, @TranslatorID, @ServiceID, @Type, @Language, @StartDate, @EndDate, @Limit, @LinkNagranie);
+
+        COMMIT;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK;
+
+        THROW;
+    END CATCH;
+END;
+```
+
+### 15. Dodanie pojedyńczych zajęć studyjnych
+
+```sql
+CREATE PROCEDURE AddSingleStudies
+    @LectureID int,
+    @Major varchar(50),
+    @Type varchar(20),
+    @Limit int = NULL,
+    @PriceInAdvance money,
+    @PriceWhole money
+AS
+BEGIN
+    BEGIN TRANSACTION;
+
+    BEGIN TRY
+        IF NOT EXISTS (SELECT 1 FROM Lectures WHERE LectureID = @LectureID)
+        BEGIN
+            THROW 50001, 'Lecture with the provided ID does not exist.', 1;
+        END
+
+        IF dbo.CheckLimitForSingleStudies(@LectureID, @Limit) = 0
+        BEGIN
+            THROW 50002, 'Invalid limit for Single_Studies.', 1;
+        END
+
+		SET IDENTITY_INSERT Single_Studies ON
+        DECLARE @NewServiceID INT;
+        SELECT @NewServiceID = ISNULL(MAX(ServiceID), 0) + 4 FROM Single_Studies;
+
+        INSERT INTO Services (ServiceID, PriceInAdvance, PriceWhole)
+        VALUES (@NewServiceID, @PriceInAdvance, @PriceWhole);
+
+        INSERT INTO Single_Studies (ServiceID, LectureID, Major, Type, Limit, PriceInAdvance, PriceWhole)
+        VALUES (@NewServiceID, @LectureID, @Major, @Type, @Limit, @PriceInAdvance, @PriceWhole);
+		SET IDENTITY_INSERT Single_Studies OFF
+
+        COMMIT;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK;
+
+        THROW;
+    END CATCH;
+END;
+```
+
+### 16. Dodanie stażu
 
 ```sql
 CREATE PROCEDURE AddInternship
-    @InternshipName VARCHAR(200),
-    @InternshipDescription VARCHAR(200),
-    @ServiceID INT,
-    @StartDate DATE,
-    @EndDate DATE
+    @ServiceID int,
+    @InternshipName varchar(200),
+    @InternshipDescription varchar(200),
+    @StartDate datetime,
+    @EndDate datetime
 AS
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM Services WHERE ServiceID = @ServiceID)
-    BEGIN
-        PRINT 'Błąd: Podane ServiceID nie istnieje.';
-        RETURN;
-    END
+    BEGIN TRANSACTION;
 
-    DECLARE @NextInternshipID INT;
+    BEGIN TRY
 
-    SELECT @NextInternshipID = ISNULL(MAX(InternshipID), 0) + 1 FROM Internships;
+        IF NOT EXISTS (SELECT 1 FROM Studies WHERE ServiceID = @ServiceID)
+        BEGIN
+            THROW 50001, 'Service with the provided ID does not exist.', 1;
+        END
 
-    INSERT INTO Internships (InternshipID, InternshipName, InternshipDescription, ServiceID, StartDate, EndDate)
-    VALUES (@NextInternshipID, @InternshipName, @InternshipDescription, @ServiceID, @StartDate, @EndDate);
+        IF NOT EXISTS (
+            SELECT 1
+            FROM Studies
+            WHERE ServiceID = @ServiceID
+              AND @StartDate >= StartDate
+              AND @EndDate <= EndDate
+        )
+        BEGIN
+            THROW 50002, 'Invalid StartDate or EndDate for the Internship.', 1;
+        END
 
-    PRINT 'Internship dodane pomyślnie.';
+        INSERT INTO Internships (ServiceID, InternshipName, InternshipDescription, StartDate, EndDate)
+        VALUES (@ServiceID, @InternshipName, @InternshipDescription, @StartDate, @EndDate);
+
+        COMMIT;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK;
+        THROW;
+    END CATCH;
 END;
 ```
 
-### 9. Dodanie zaliczonych stażów
+### 17. Dodanie przedmiotu do koszyka
 
 ```sql
-CREATE PROCEDURE AddInternshipPassed
-    @InternshipID INT,
+CREATE PROCEDURE AddToCart
     @CustomerID INT,
-    @Passed VARCHAR(3)
+    @ServiceID INT
 AS
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM Internships WHERE InternshipID = @InternshipID)
-    BEGIN
-        PRINT 'Błąd: Podane InternshipID nie istnieje.';
-        RETURN;
-    END
+    BEGIN TRANSACTION;
 
-    IF NOT EXISTS (SELECT 1 FROM Customers WHERE CustomerID = @CustomerID)
-    BEGIN
-        PRINT 'Błąd: Podane CustomerID nie istnieje.';
-        RETURN;
-    END
+    BEGIN TRY
+        IF NOT EXISTS (SELECT 1 FROM Services WHERE ServiceID = @ServiceID)
+        BEGIN
+            THROW 50001, 'Service with the provided ID does not exist.', 1;
+        END
 
-    DECLARE @NextInternshipPassedID INT;
+        DECLARE @CartOrderID INT;
+        SELECT @CartOrderID = dbo.IsThereCart(@CustomerID);
 
-    SELECT @NextInternshipPassedID = ISNULL(MAX(InternshipPassedID), 0) + 1 FROM Internships_passed;
+        IF @CartOrderID IS NULL
+        BEGIN
+            INSERT INTO Orders (CustomerID, OrderDate, PaymentAssesed, PaymentPaid, PaymentWaived, DueDate, OrderStatus)
+            VALUES (@CustomerID, GETDATE(), 0, 0, 0, DATEADD(DAY, 30, GETDATE()), 'InCart');
 
-    INSERT INTO Internships_passed (InternshipPassedID, InternshipID, CustomerID, Passed)
-    VALUES (@NextInternshipPassedID, @InternshipID, @CustomerID, @Passed);
+    
+            SET @CartOrderID = SCOPE_IDENTITY();
+        END
+		IF @CartOrderID is not NULL
+		BEGIN
+			SET @CartOrderID = @CartOrderID;
+		END
+        INSERT INTO Order_details (ServiceID, OrderID, UnitPrice)
+        VALUES (@ServiceID, @CartOrderID, 0);
 
-    PRINT 'Zaliczenie stażu dodane pomyślnie.';
+        COMMIT;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK;
+
+        THROW;
+    END CATCH;
 END;
+```
+
+### 18. Usunięcie przedmiotu z koszyka
+
+```sql
+CREATE PROCEDURE DeleteFromCart
+    @CustomerID INT,
+    @ServiceID INT
+AS
+BEGIN
+    BEGIN TRANSACTION;
+
+    BEGIN TRY
+        IF NOT EXISTS (SELECT 1 FROM Services WHERE ServiceID = @ServiceID)
+        BEGIN
+            THROW 50001, 'Service with the provided ID does not exist.', 1;
+        END
+
+        DECLARE @CartOrderID INT;
+        SET @CartOrderID = dbo.IsThereCart(@CustomerID);
+
+        IF @CartOrderID IS NULL
+        BEGIN
+			ROLLBACK;
+            RETURN;
+        END
+
+        DELETE FROM Order_details
+        WHERE OrderID = @CartOrderID AND ServiceID = @ServiceID;
+
+        COMMIT;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK;
+
+        THROW;
+    END CATCH;
+END;
+```
+
+### 19. Kupienie zawartości koszyka
+
+```sql
+CREATE PROCEDURE BuyCart
+    @CustomerID INT
+AS
+BEGIN
+    BEGIN TRANSACTION;
+
+    BEGIN TRY
+        DECLARE @CartOrderID INT;
+        SET @CartOrderID = dbo.IsThereCart(@CustomerID);
+
+        IF @CartOrderID IS NULL
+        BEGIN
+            RETURN;
+        END
+
+
+        UPDATE Orders
+        SET OrderStatus = 'Ordered',
+            OrderDate = GETDATE()
+        WHERE OrderID = @CartOrderID;
+
+        DECLARE @NewBalance MONEY;
+        SELECT @NewBalance = Balance FROM Customers WHERE CustomerID = @CustomerID;
+
+        DECLARE @NewPaymentPaid MONEY = 0;
+        DECLARE @NewPaymentAssesed MONEY = 0;
+        UPDATE od
+		SET od.UnitPrice = s.PriceWhole,
+			@NewPaymentAssesed = @NewPaymentAssesed + s.PriceWhole,
+			@NewPaymentPaid = @NewPaymentPaid + 
+				CASE 
+					WHEN s.PriceWhole > @NewBalance and @NewBalance>0 THEN @NewBalance
+					WHEN s.PriceWhole > @NewBalance and @NewBalance<0 THEN 0
+					ELSE s.PriceWhole
+				END,
+			@NewBalance = @NewBalance - s.PriceWhole
+		FROM Order_details od
+		INNER JOIN Services s ON od.ServiceID = s.ServiceID
+		INNER JOIN Orders o ON od.OrderID = o.OrderID
+		INNER JOIN Customers c ON o.CustomerID = c.CustomerID
+		WHERE od.OrderID = @CartOrderID;
+
+
+        UPDATE Orders
+        SET PaymentPaid = @NewPaymentPaid,
+            PaymentAssesed = @NewPaymentAssesed
+        WHERE OrderID = @CartOrderID;
+
+        UPDATE Customers
+        SET Balance = @NewBalance
+        WHERE CustomerID = @CustomerID;
+
+        COMMIT;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK;
+
+        THROW;
+    END CATCH;
+END;
+
+```
+
+### 20. Zaaktualizowanie stanu konta klienta
+
+```sql
+CREATE PROCEDURE UpdateBalance
+    @CustomerID INT,
+    @Amount MONEY
+AS
+BEGIN
+    BEGIN TRANSACTION;
+
+    BEGIN TRY
+	    UPDATE Customers
+        SET Balance = Balance + @Amount
+        WHERE CustomerID = @CustomerID;
+
+        DECLARE @RemainingAmount MONEY = @Amount;
+
+        WHILE @RemainingAmount > 0
+        BEGIN
+        
+            DECLARE @OldestOrderID INT;
+
+            SELECT TOP 1 @OldestOrderID = o.OrderID
+            FROM Orders o
+            WHERE o.CustomerID = @CustomerID
+              AND o.PaymentAssesed - o.PaymentPaid > 0
+            ORDER BY o.OrderDate;
+
+    
+            IF @OldestOrderID IS NULL
+                BREAK;
+			
+            DECLARE @RemainingOrderAmount MONEY;
+            SELECT @RemainingOrderAmount = o.PaymentAssesed - o.PaymentPaid from orders o where orderID = @OldestOrderID
+
+            DECLARE @PaymentThisIteration MONEY;
+            SET @PaymentThisIteration = CASE
+                WHEN @RemainingOrderAmount >= @RemainingAmount THEN @RemainingAmount
+                ELSE @RemainingOrderAmount
+            END;
+
+   
+            UPDATE o
+            SET  o.PaymentPaid = o.PaymentPaid + @PaymentThisIteration
+            FROM Orders o
+            WHERE o.OrderID = @OldestOrderID;
+
+
+            SET @RemainingAmount = @RemainingAmount - @PaymentThisIteration;
+        END
+        COMMIT;
+    END TRY
+    BEGIN CATCH
+
+        ROLLBACK;
+
+        THROW;
+    END CATCH;
+END;
+```
+
+### 21. "Kup teraz!"
+
+```sql
+CREATE PROCEDURE BuyNow
+    @CustomerID INT,
+    @ServiceID INT
+AS
+BEGIN
+    BEGIN TRANSACTION;
+
+    BEGIN TRY
+        IF dbo.checklimit(@ServiceID) = 0
+        BEGIN
+            ROLLBACK;
+            RETURN;
+        END
+
+        DECLARE @Balance MONEY;
+        SELECT @Balance = Balance FROM Customers WHERE CustomerID = @CustomerID;
+
+        DECLARE @PriceInAdvance MONEY, @PriceWhole MONEY;
+        SELECT @PriceInAdvance = PriceInAdvance, @PriceWhole = PriceWhole FROM Services WHERE ServiceID = @ServiceID;
+
+        IF @Balance < @PriceInAdvance
+        BEGIN
+            ROLLBACK;
+            RETURN;
+        END
+
+	DECLARE @duedate DATETIME;
+	SET @duedate = DATEADD(DAY, 5, GETDATE());
+
+        INSERT INTO Orders (CustomerID, OrderDate, PaymentAssesed, PaymentPaid, PaymentWaived, DueDate, OrderStatus)
+        VALUES (@CustomerID, GETDATE(), @PriceWhole, 
+                CASE WHEN @PriceWhole < @Balance THEN @PriceWhole ELSE @Balance END, 0,@duedate,
+                'Ordered');
+
+
+        DECLARE @NewOrderID INT;
+        SET @NewOrderID = SCOPE_IDENTITY();
+
+        UPDATE Customers
+        SET Balance = Balance - CASE WHEN @PriceWhole < @Balance THEN @PriceWhole ELSE @Balance END
+        WHERE CustomerID = @CustomerID;
+
+        INSERT INTO Order_details (OrderID, ServiceID, UnitPrice)
+        VALUES (@NewOrderID, @ServiceID, @PriceWhole);
+
+        COMMIT;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK;
+
+        THROW;
+    END CATCH;
+END;
+```
+
+### 22. tbd
+
+```sql
+
+```
+
+### 23. Dodanie przedmiotu do koszyka
+
+```sql
+
+```
+
+### 24. Dodanie przedmiotu do koszyka
+
+```sql
+
+```
+
+### 25. Dodanie przedmiotu do koszyka
+
+```sql
+
 ```
