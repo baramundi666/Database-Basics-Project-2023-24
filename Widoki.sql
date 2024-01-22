@@ -99,7 +99,7 @@ group by Lectures.ServiceID,Lectures.LecturerID,Lectures.Type, Lectures.StartDat
 
 union
 
-select Lectures.ServiceID,Lectures.LecturerID,Single_Studies.Type as Typ, Lectures.StartDate,  count(Customers.CustomerID) as Liczba_Zapisanych_Osób
+select Lectures.ServiceID,Lectures.LecturerID,Lectures.Type as Typ, Lectures.StartDate,  count(Customers.CustomerID) as Liczba_Zapisanych_Osób
 from Customers
 join Orders on Customers.CustomerID = Orders.CustomerID
 join Order_Details on Orders.OrderID = Order_Details.OrderID
@@ -107,7 +107,7 @@ join Services on Order_Details.ServiceID = Services.ServiceID
 join Single_studies on Single_studies.ServiceID = Services.ServiceID
 join Lectures on Lectures.ServiceID = Single_studies.ServiceID
 where Lectures.StartDate > GETDATE()
-group by Lectures.ServiceID,Lectures.LecturerID,Single_Studies.Type, Lectures.StartDate
+group by Lectures.ServiceID,Lectures.LecturerID,Lectures.Type, Lectures.StartDate
 
 union
 
@@ -138,9 +138,52 @@ group by Courses_hist.ClassID,Courses_hist.LecturerID, Courses.Type,  Courses_hi
 go
 
 --4. Ogólny raport dotyczący frekwencji na zakończonych już wydarzeniach.
+select
+    event_type,
+    event_id,
+    customer_id,
+    attendance
+from
+    (
+        select
+            'lecture' as event_type,
+            la.lecture_id as event_id,
+            la.customer_id,
+            la.attendance
+        from
+            lectures_attendance la
+            join lectures l on la.lecture_id = l.lecture_id
+        where
+            l.end_date <= getdate()
 
+        union all
 
+        select
+            'webinar' as event_type,
+            wa.webinar_id as event_id,
+            wa.customer_id,
+            wa.attendance
+        from
+            webinars_attendance wa
+            join webinars_hist wh on wa.webinar_id = wh.webinar_id
+        where
+            wh.end_date <= getdate()
 
+        union all
+
+        select
+            'course' as event_type,
+            ca.class_id as event_id,
+            ca.customer_id,
+            ca.attendance
+        from
+            courses_attendance ca
+            join courses_hist ch on ca.class_id = ch.class_id
+        where
+            ch.end_date <= getdate()
+    ) all_events;
+
+go
 --5. Lista obecności dla każdego szkolenia z datą, imieniem, nazwiskiem i informacją czy
 --uczestnik był obecny, czy nie.
 
@@ -213,32 +256,34 @@ SELECT
     c.CustomerID,
     c.FirstName,
     c.LastName,
-    t1.TrainingID AS Training1ID,
-    t1.TrainingType AS Training1Type,
-    t1.StartDate AS Training1StartDate,
-    t1.EndDate AS Training1EndDate,
-    t2.TrainingID AS Training2ID,
-    t2.TrainingType AS Training2Type,
-    t2.StartDate AS Training2StartDate,
-    t2.EndDate AS Training2EndDate
+    t1.ServiceID AS Service1ID,
+    t1.ServiceType AS Service1Type,
+    t1.StartDate AS Service1StartDate,
+    t1.EndDate AS Service1EndDate,
+    t2.ServiceID AS Service2ID,
+    t2.ServiceType AS Service2Type,
+    t2.StartDate AS Service2StartDate,
+    t2.EndDate AS Service2EndDate
 FROM
     Customers c
     JOIN (
         SELECT
             Lectures_attendance.CustomerID,
-            ServiceID AS TrainingID,
-            'Studies' AS TrainingType,
-            StartDate,
-            EndDate
+            Lectures.ServiceID AS ServiceID,
+            'Studies' AS ServiceType,
+            Lectures.StartDate,
+            Lectures.EndDate
         FROM Studies
-        WHERE EndDate > GETDATE()
+		join Lectures on Lectures.ServiceID = Studies.ServiceID
+		join Lectures_attendance on Lectures.LectureID = Lectures_attendance.LectureID
+        WHERE Lectures.EndDate > GETDATE()
 
         UNION
 
         SELECT
             la.CustomerID,
-            lh.ServiceID AS TrainingID,
-            'Single_Studies' AS TrainingType,
+            lh.ServiceID AS ServiceID,
+            'Single_Studies' AS ServiceType,
             lh.StartDate,
             lh.EndDate
         FROM Lectures_attendance la
@@ -249,43 +294,46 @@ FROM
 
         SELECT
             wa.CustomerID,
-            wh.ServiceID AS TrainingID,
-            'Webinars' AS TrainingType,
+            wh.ServiceID AS ServiceID,
+            'Webinars' AS ServiceType,
             wh.StartDate,
             wh.EndDate
         FROM Webinars_attendance wa
-        INNER JOIN Webinars_hist wh ON wa.WebinarID = wh.WebinarID
+        JOIN Webinars_hist wh ON wa.WebinarID = wh.WebinarID
         WHERE wh.EndDate > GETDATE()
 
-        UNION ALL
+        UNION 
 
         SELECT
-            ca.CustomerID,
-            ch.ServiceID AS TrainingID,
-            'Courses' AS TrainingType,
-            ch.StartDate,
-            ch.EndDate
-        FROM Courses_attendance ca
-        INNER JOIN Courses_hist ch ON ca.ClassID = ch.ClassID
-        WHERE ch.EndDate > GETDATE()
+            Courses_attendance.CustomerID,
+            Modules.ServiceID AS ServiceID,
+            'Courses' AS ServiceType,
+            Courses_hist.StartDate,
+            Courses_hist.EndDate
+        FROM Courses_attendance
+        JOIN Courses_hist ON Courses_attendance.ClassID = Courses_hist.ClassID
+		join Modules on Modules.ModuleID = Courses_hist.ModuleID
+        WHERE Courses_hist.EndDate > GETDATE()
     ) t1 ON c.CustomerID = t1.CustomerID
 
     JOIN (
         SELECT
-            CustomerID,
-            ServiceID AS TrainingID,
-            'Studies' AS TrainingType,
-            StartDate,
-            EndDate
+            Lectures_attendance.CustomerID,
+            Lectures.ServiceID AS ServiceID,
+            'Studies' AS ServiceType,
+            Lectures.StartDate,
+            Lectures.EndDate
         FROM Studies
-        WHERE EndDate > GETDATE()
+		join Lectures on Lectures.ServiceID = Studies.ServiceID
+		join Lectures_attendance on Lectures.LectureID = Lectures_attendance.LectureID
+        WHERE Lectures.EndDate > GETDATE()
 
         UNION ALL
 
         SELECT
             la.CustomerID,
-            lh.ServiceID AS TrainingID,
-            'Single_Studies' AS TrainingType,
+            lh.ServiceID AS ServiceID,
+            'Single_Studies' AS ServiceType,
             lh.StartDate,
             lh.EndDate
         FROM Lectures_attendance la
@@ -296,8 +344,8 @@ FROM
 
         SELECT
             wa.CustomerID,
-            wh.ServiceID AS TrainingID,
-            'Webinars' AS TrainingType,
+            wh.ServiceID AS ServiceID,
+            'Webinars' AS ServiceType,
             wh.StartDate,
             wh.EndDate
         FROM Webinars_attendance wa
@@ -308,14 +356,15 @@ FROM
 
         SELECT
             ca.CustomerID,
-            ch.ServiceID AS TrainingID,
-            'Courses' AS TrainingType,
-            ch.StartDate,
-            ch.EndDate
+            Modules.ServiceID AS ServiceID,
+            'Courses' AS ServiceType,
+            Courses_hist.StartDate,
+            Courses_hist.EndDate
         FROM Courses_attendance ca
-        INNER JOIN Courses_hist ch ON ca.ClassID = ch.ClassID
-        WHERE ch.EndDate > GETDATE()
+        INNER JOIN Courses_hist ON ca.ClassID = Courses_hist.ClassID
+		join Modules on Modules.ModuleID = Courses_hist.ModuleID
+        WHERE Courses_hist.EndDate > GETDATE()
     ) t2 ON c.CustomerID = t2.CustomerID
-    AND t1.TrainingID < t2.TrainingID
+    AND t1.ServiceID < t2.ServiceID
     AND t1.EndDate > t2.StartDate
     AND t1.StartDate < t2.EndDate;

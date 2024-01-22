@@ -1,300 +1,300 @@
-(1,'Samson','Long'),
-(2,'Xanthus','Cruz'),
-(3,'Farrah','Rivera'),
-(4,'Zorita','Shepherd'),
-(5,'Levi','Lambert'),
-(6,'Constance','Mathews'),
-(7,'Alvin','Mcgee'),
-(8,'Sean','Woodard'),
-(9,'Skyler','Farmer'),
-(10,'Yuri','Kirby'),
-(11,'Jacqueline','Vance'),
-(12,'Jolene','Watts'),
-(13,'Flynn','Lee'),
-(14,'Hu','Hester'),
-(15,'Bevis','Stone'),
-(16,'Octavius','Cherry'),
-(17,'Justine','Parsons'),
-(18,'Barclay','Hicks'),
-(19,'Doris','Blake'),
-(20,'Frances','England'),
-(21,'Xandra','Duncan'),
-(22,'Ezekiel','Nichols'),
-(23,'Armand','Forbes'),
-(24,'Isabelle','Dodson'),
-(25,'Driscoll','Chandler'),
-(26,'Chaim','Ayers'),
-(27,'Amena','Avery'),
-(28,'Olympia','Edwards'),
-(29,'Demetrius','Hayden'),
-(30,'Rogan','Roach'),
-(31,'Allistair','Middleton'),
-(32,'Chancellor','Yang'),
-(33,'Meredith','Downs'),
-(34,'Salvador','Cotton'),
-(35,'Nash','Mcclure'),
-(36,'Zia','Fischer'),
-(37,'Gray','Casey'),
-(38,'Desirae','Rush'),
-(39,'Kay','Lara'),
-(40,'Katell','Herring'),
-(41,'Heather','Hunter'),
-(42,'Colorado','Landry'),
-(43,'Steel','Garcia'),
-(44,'Mariko','Holmes'),
-(45,'Chester','Medina'),
-(46,'Charity','Calderon'),
-(47,'Chaim','Hubbard'),
-(48,'Amir','Santana'),
-(49,'Asher','Barry'),
-(50,'Price','Osborne'),
-(51,'Brennan','Rose'),
-(52,'Amery','Irwin'),
-(53,'Brynn','Manning'),
-(54,'Nelle','Wilcox'),
-(55,'Kalia','Stevens'),
-(56,'Chancellor','Franks'),
-(57,'Zia','Adkins'),
-(58,'Kaseem','Cook'),
-(59,'Macaulay','Pate'),
-(60,'Sybill','Riley'),
-(61,'Brenden','Floyd'),
-(62,'Colleen','Small'),
-(63,'Eaton','Hunter'),
-(64,'TaShya','House'),
-(65,'Doris','Rutledge'),
-(66,'Danielle','Love'),
-(67,'Wang','Newman'),
-(68,'Odette','Graham'),
-(69,'Catherine','Mendoza'),
-(70,'Oliver','Peck'),
-(71,'Devin','Hodge'),
-(72,'Kelly','Mccall'),
-(73,'Robert','Landry'),
-(74,'Yasir','Parker'),
-(75,'Cade','Poole'),
-(76,'Judah','Owens'),
-(77,'Colt','Lawrence'),
-(78,'Kim','Prince'),
-(79,'Quinn','Floyd'),
-(80,'Raven','Slater'),
-(81,'Darius','Thomas'),
-(82,'Thane','Melendez'),
-(83,'Cecilia','Hebert'),
-(84,'Finn','Irwin'),
-(85,'Ross','Burke'),
-(86,'Ferdinand','Conway'),
-(87,'Alexis','Kent'),
-(88,'Grace','Wiggins'),
-(89,'Donovan','Randolph'),
-(90,'Lilah','Mcconnell'),
-(91,'Imani','Davis'),
-(92,'Asher','Juarez'),
-(93,'Raja','Barry'),
-(94,'Belle','Spears'),
-(95,'Xandra','Byers'),
-(96,'Imani','Glenn'),
-(97,'Kalia','Livingston'),
-(98,'Magee','Dixon'),
-(99,'Luke','Davenport'),
-(100,'Austin','Mcconnell'),
-(101,'Christen','Vincent'),
-(102,'Griffith','Rodriguez'),
-(103,'Lael','Schneider'),
-(104,'Simon','Rollins'),
-(105,'Rahim','Manning'),
-(106,'Samuel','Powell'),
-(107,'Oliver','Skinner'),
-(108,'Phelan','Christian'),
-(109,'Idona','Johns'),
-(110,'Yvonne','Reilly'),
-(111,'Odette','Velazquez'),
-(112,'Acton','Charles'),
-(113,'Cleo','Stone'),
-(114,'Yuli','Rich'),
-(115,'Charde','Mckenzie'),
-(116,'Tatyana','Barry'),
-(117,'Brielle','Branch'),
-(118,'Melanie','Hess'),
-(119,'Harrison','Beck'),
-(120,'Giacomo','Goff'),
-(121,'Cairo','Hickman'),
-(122,'Chaney','Horne'),
-(123,'Rose','Grimes'),
-(124,'Sybill','Castaneda'),
-(125,'Todd','Nolan'),
-(126,'Amal','Wilkins'),
-(127,'George','Malone'),
-(128,'Rebekah','Cochran'),
-(129,'Amaya','Daniel'),
-(130,'Gage','Cain'),
-(131,'Fletcher','Jensen'),
-(132,'Plato','Higgins'),
-(133,'Melyssa','Barker'),
-(134,'David','Hansen'),
-(135,'Rigel','Barlow'),
-(136,'Aladdin','Jarvis'),
-(137,'Madaline','Cruz'),
-(138,'Carly','Delaney'),
-(139,'Cecilia','Cummings'),
-(140,'Deacon','Scott'),
-(141,'Medge','Estes'),
-(142,'Lawrence','Freeman'),
-(143,'Tarik','Pacheco'),
-(144,'Hu','Holcomb'),
-(145,'Myra','Stafford'),
-(146,'Adam','Justice'),
-(147,'Cedric','Clemons'),
-(148,'Mohammad','Herrera'),
-(149,'Branden','Whitley'),
-(150,'Ciaran','Golden'),
-(151,'Amber','Dixon'),
-(152,'Nelle','Macdonald'),
-(153,'Brenden','Hartman'),
-(154,'Bryar','Hartman'),
-(155,'Brynn','Washington'),
-(156,'MacKenzie','Carver'),
-(157,'Ariel','Houston'),
-(158,'Cain','Vaughn'),
-(159,'Jakeem','Atkinson'),
-(160,'Dale','Travis'),
-(161,'Haley','Guerrero'),
-(162,'Zenia','Preston'),
-(163,'Miriam','Armstrong'),
-(164,'Dillon','James'),
-(165,'Emerald','Graham'),
-(166,'Evelyn','Cole'),
-(167,'Plato','O''brien'),
-(168,'Cooper','Mccarty'),
-(169,'Hadassah','Jackson'),
-(170,'Yuli','Shields'),
-(171,'August','Newman'),
-(172,'Inga','Benton'),
-(173,'Andrew','Coleman'),
-(174,'Martena','Chang'),
-(175,'Kevin','Justice'),
-(176,'Axel','Carlson'),
-(177,'Jeanette','Vance'),
-(178,'Marsden','Hutchinson'),
-(179,'Quyn','Langley'),
-(180,'Jolene','Carrillo'),
-(181,'Jin','Moon'),
-(182,'Jack','Simon'),
-(183,'Francis','Ortega'),
-(184,'Jillian','Wagner'),
-(185,'Knox','Gill'),
-(186,'Phyllis','Estes'),
-(187,'Xanthus','Hoover'),
-(188,'Florence','Henson'),
-(189,'Quinn','Bennett'),
-(190,'Yoshio','Matthews'),
-(191,'Preston','Foster'),
-(192,'Gannon','Knapp'),
-(193,'Thane','Curtis'),
-(194,'Wallace','Mosley'),
-(195,'Gary','Mccullough'),
-(196,'Cain','Osborne'),
-(197,'Charissa','Meadows'),
-(198,'Indigo','Cabrera'),
-(199,'Silas','Ratliff'),
-(200,'Clark','Cameron'),
-(201,'Patrick','Woodward'),
-(202,'Zorita','Buck'),
-(203,'Deborah','Blevins'),
-(204,'John','Walls'),
-(205,'Calvin','Long'),
-(206,'Kylan','Hudson'),
-(207,'Cole','Scott'),
-(208,'Randall','Smith'),
-(209,'Castor','Flowers'),
-(210,'Pandora','Hatfield'),
-(211,'Chandler','Delgado'),
-(212,'Paki','Dunlap'),
-(213,'Patience','Villarreal'),
-(214,'Todd','Booker'),
-(215,'Kylie','Barker'),
-(216,'Kevyn','Grimes'),
-(217,'Brock','Kim'),
-(218,'Tasha','Wilson'),
-(219,'Ruby','Pacheco'),
-(220,'Wanda','Nguyen'),
-(221,'Orla','Farmer'),
-(222,'Melissa','Ellis'),
-(223,'Chaim','Clarke'),
-(224,'Camden','Pena'),
-(225,'Kato','Donovan'),
-(226,'Kylie','Lopez'),
-(227,'Quemby','Wiley'),
-(228,'Neil','Brewer'),
-(229,'Amethyst','Dominguez'),
-(230,'Declan','Norton'),
-(231,'Bethany','Hunt'),
-(232,'Kasimir','Chang'),
-(233,'Sybil','Rollins'),
-(234,'Joy','Mueller'),
-(235,'Candice','Whitaker'),
-(236,'Vladimir','Mckenzie'),
-(237,'Alexis','Guy'),
-(238,'Keith','Hubbard'),
-(239,'James','Dennis'),
-(240,'Madaline','Meyer'),
-(241,'Cassidy','Clemons'),
-(242,'Graham','Carson'),
-(243,'Joseph','House'),
-(244,'Caldwell','Cherry'),
-(245,'Madonna','Marsh'),
-(246,'Patience','Patterson'),
-(247,'Miriam','Lindsay'),
-(248,'Tana','Glenn'),
-(249,'Hyacinth','Trujillo'),
-(250,'Lacey','Montgomery'),
-(251,'Sydnee','Harris'),
-(252,'Justine','Bailey'),
-(253,'Hanae','Watkins'),
-(254,'Octavius','Daugherty'),
-(255,'Ezra','Russell'),
-(256,'Ralph','Lynch'),
-(257,'Ava','Welch'),
-(258,'Brenden','Tanner'),
-(259,'Caleb','Randall'),
-(260,'Paul','Branch'),
-(261,'Bert','Delaney'),
-(262,'Macey','Wolfe'),
-(263,'Zena','Pruitt'),
-(264,'Benjamin','Davis'),
-(265,'Ivan','Faulkner'),
-(266,'Omar','Hart'),
-(267,'Henry','Dominguez'),
-(268,'Dante','Bailey'),
-(269,'Jade','Matthews'),
-(270,'Bruno','Mercer'),
-(271,'Hunter','Barnett'),
-(272,'Sebastian','Mcfadden'),
-(273,'Porter','Bernard'),
-(274,'Jermaine','Cobb'),
-(275,'Michael','Juarez'),
-(276,'Lee','Reid'),
-(277,'Tarik','Compton'),
-(278,'Justina','Griffith'),
-(279,'Susan','Zamora'),
-(280,'Leroy','Potts'),
-(281,'Fredericka','Mcbride'),
-(282,'Rigel','Rios'),
-(283,'Noelle','Dillard'),
-(284,'Ebony','Fletcher'),
-(285,'Cain','Lucas'),
-(286,'Brody','Fitzgerald'),
-(287,'Hakeem','Fleming'),
-(288,'Rosalyn','Casey'),
-(289,'Karleigh','Ashley'),
-(290,'Anthony','Harrington'),
-(291,'Risa','Buchanan'),
-(292,'Fleur','Burris'),
-(293,'Geoffrey','Spence'),
-(294,'Todd','Porter'),
-(295,'Denise','Stevenson'),
-(296,'Tate','Church'),
-(297,'Rina','Caldwell'),
-(298,'Wallace','Mays'),
-(299,'Chase','Cabrera'),
-(300,'Shelby','Potts');
+EXEC AddLecturer 'Samson', 'Long'; 
+EXEC AddLecturer 'Xanthus', 'Cruz'; 
+EXEC AddLecturer 'Farrah', 'Rivera';
+EXEC AddLecturer 'Zorita', 'Shepherd';
+EXEC AddLecturer 'Levi', 'Lambert';
+EXEC AddLecturer 'Constance', 'Mathews';
+EXEC AddLecturer 'Alvin', 'Mcgee';
+EXEC AddLecturer 'Sean', 'Woodard';
+EXEC AddLecturer 'Skyler', 'Farmer';
+EXEC AddLecturer 'Yuri', 'Kirby';
+EXEC AddLecturer 'Jacqueline', 'Vance';
+EXEC AddLecturer 'Jolene', 'Watts';
+EXEC AddLecturer 'Flynn', 'Lee';
+EXEC AddLecturer 'Hu', 'Hester';
+EXEC AddLecturer 'Bevis', 'Stone';
+EXEC AddLecturer 'Octavius', 'Cherry';
+EXEC AddLecturer 'Justine', 'Parsons';
+EXEC AddLecturer 'Barclay', 'Hicks';
+EXEC AddLecturer 'Doris', 'Blake';
+EXEC AddLecturer 'Frances', 'England';
+EXEC AddLecturer 'Xandra', 'Duncan';
+EXEC AddLecturer 'Ezekiel', 'Nichols';
+EXEC AddLecturer 'Armand', 'Forbes';
+EXEC AddLecturer 'Isabelle', 'Dodson';
+EXEC AddLecturer 'Driscoll', 'Chandler';
+EXEC AddLecturer 'Chaim', 'Ayers';
+EXEC AddLecturer 'Amena', 'Avery';
+EXEC AddLecturer 'Olympia', 'Edwards';
+EXEC AddLecturer 'Demetrius', 'Hayden';
+EXEC AddLecturer 'Rogan', 'Roach';
+EXEC AddLecturer 'Allistair', 'Middleton';
+EXEC AddLecturer 'Chancellor', 'Yang';
+EXEC AddLecturer 'Meredith', 'Downs';
+EXEC AddLecturer 'Salvador', 'Cotton';
+EXEC AddLecturer 'Nash', 'Mcclure';
+EXEC AddLecturer 'Zia', 'Fischer';
+EXEC AddLecturer 'Gray', 'Casey';
+EXEC AddLecturer 'Desirae', 'Rush';
+EXEC AddLecturer 'Kay', 'Lara';
+EXEC AddLecturer 'Katell', 'Herring';
+EXEC AddLecturer 'Heather', 'Hunter';
+EXEC AddLecturer 'Colorado', 'Landry';
+EXEC AddLecturer 'Steel', 'Garcia';
+EXEC AddLecturer 'Mariko', 'Holmes';
+EXEC AddLecturer 'Chester', 'Medina';
+EXEC AddLecturer 'Charity', 'Calderon';
+EXEC AddLecturer 'Chaim', 'Hubbard';
+EXEC AddLecturer 'Amir', 'Santana';
+EXEC AddLecturer 'Asher', 'Barry';
+EXEC AddLecturer 'Price', 'Osborne';
+EXEC AddLecturer 'Brennan', 'Rose';
+EXEC AddLecturer 'Amery', 'Irwin';
+EXEC AddLecturer 'Brynn', 'Manning';
+EXEC AddLecturer 'Nelle', 'Wilcox';
+EXEC AddLecturer 'Kalia', 'Stevens';
+EXEC AddLecturer 'Chancellor', 'Franks';
+EXEC AddLecturer 'Zia', 'Adkins';
+EXEC AddLecturer 'Kaseem', 'Cook';
+EXEC AddLecturer 'Macaulay', 'Pate';
+EXEC AddLecturer 'Sybill', 'Riley';
+EXEC AddLecturer 'Brenden', 'Floyd';
+EXEC AddLecturer 'Colleen', 'Small';
+EXEC AddLecturer 'Eaton', 'Hunter';
+EXEC AddLecturer 'TaShya', 'House';
+EXEC AddLecturer 'Doris', 'Rutledge';
+EXEC AddLecturer 'Danielle', 'Love';
+EXEC AddLecturer 'Wang', 'Newman';
+EXEC AddLecturer 'Odette', 'Graham';
+EXEC AddLecturer 'Catherine', 'Mendoza';
+EXEC AddLecturer 'Oliver', 'Peck';
+EXEC AddLecturer 'Devin', 'Hodge';
+EXEC AddLecturer 'Kelly', 'Mccall';
+EXEC AddLecturer 'Robert', 'Landry';
+EXEC AddLecturer 'Yasir', 'Parker';
+EXEC AddLecturer 'Cade', 'Poole';
+EXEC AddLecturer 'Judah', 'Owens';
+EXEC AddLecturer 'Colt', 'Lawrence';
+EXEC AddLecturer 'Kim', 'Prince';
+EXEC AddLecturer 'Quinn', 'Floyd';
+EXEC AddLecturer 'Raven', 'Slater';
+EXEC AddLecturer 'Darius', 'Thomas';
+EXEC AddLecturer 'Thane', 'Melendez';
+EXEC AddLecturer 'Cecilia', 'Hebert';
+EXEC AddLecturer 'Finn', 'Irwin';
+EXEC AddLecturer 'Ross', 'Burke';
+EXEC AddLecturer 'Ferdinand', 'Conway';
+EXEC AddLecturer 'Alexis', 'Kent';
+EXEC AddLecturer 'Grace', 'Wiggins';
+EXEC AddLecturer 'Donovan', 'Randolph';
+EXEC AddLecturer 'Lilah', 'Mcconnell';
+EXEC AddLecturer 'Imani', 'Davis';
+EXEC AddLecturer 'Asher', 'Juarez';
+EXEC AddLecturer 'Raja', 'Barry';
+EXEC AddLecturer 'Belle', 'Spears';
+EXEC AddLecturer 'Xandra', 'Byers';
+EXEC AddLecturer 'Imani', 'Glenn';
+EXEC AddLecturer 'Kalia', 'Livingston';
+EXEC AddLecturer 'Magee', 'Dixon';
+EXEC AddLecturer 'Luke', 'Davenport';
+EXEC AddLecturer 'Austin', 'Mcconnell';
+EXEC AddLecturer 'Christen', 'Vincent';
+EXEC AddLecturer 'Griffith', 'Rodriguez';
+EXEC AddLecturer 'Lael', 'Schneider';
+EXEC AddLecturer 'Simon', 'Rollins';
+EXEC AddLecturer 'Rahim', 'Manning';
+EXEC AddLecturer 'Samuel', 'Powell';
+EXEC AddLecturer 'Oliver', 'Skinner';
+EXEC AddLecturer 'Phelan', 'Christian';
+EXEC AddLecturer 'Idona', 'Johns';
+EXEC AddLecturer 'Yvonne', 'Reilly';
+EXEC AddLecturer 'Odette', 'Velazquez';
+EXEC AddLecturer 'Acton', 'Charles';
+EXEC AddLecturer 'Cleo', 'Stone';
+EXEC AddLecturer 'Yuli', 'Rich';
+EXEC AddLecturer 'Charde', 'Mckenzie';
+EXEC AddLecturer 'Tatyana', 'Barry';
+EXEC AddLecturer 'Brielle', 'Branch';
+EXEC AddLecturer 'Melanie', 'Hess';
+EXEC AddLecturer 'Harrison', 'Beck';
+EXEC AddLecturer 'Giacomo', 'Goff';
+EXEC AddLecturer 'Cairo', 'Hickman';
+EXEC AddLecturer 'Chaney', 'Horne';
+EXEC AddLecturer 'Rose', 'Grimes';
+EXEC AddLecturer 'Sybill', 'Castaneda';
+EXEC AddLecturer 'Todd', 'Nolan';
+EXEC AddLecturer 'Amal', 'Wilkins';
+EXEC AddLecturer 'George', 'Malone';
+EXEC AddLecturer 'Rebekah', 'Cochran';
+EXEC AddLecturer 'Amaya', 'Daniel';
+EXEC AddLecturer 'Gage', 'Cain';
+EXEC AddLecturer 'Fletcher', 'Jensen';
+EXEC AddLecturer 'Plato', 'Higgins';
+EXEC AddLecturer 'Melyssa', 'Barker';
+EXEC AddLecturer 'David', 'Hansen';
+EXEC AddLecturer 'Rigel', 'Barlow';
+EXEC AddLecturer 'Aladdin', 'Jarvis';
+EXEC AddLecturer 'Madaline', 'Cruz';
+EXEC AddLecturer 'Carly', 'Delaney';
+EXEC AddLecturer 'Cecilia', 'Cummings';
+EXEC AddLecturer 'Deacon', 'Scott';
+EXEC AddLecturer 'Medge', 'Estes';
+EXEC AddLecturer 'Lawrence', 'Freeman';
+EXEC AddLecturer 'Tarik', 'Pacheco';
+EXEC AddLecturer 'Hu', 'Holcomb';
+EXEC AddLecturer 'Myra', 'Stafford';
+EXEC AddLecturer 'Adam', 'Justice';
+EXEC AddLecturer 'Cedric', 'Clemons';
+EXEC AddLecturer 'Mohammad', 'Herrera';
+EXEC AddLecturer 'Branden', 'Whitley';
+EXEC AddLecturer 'Ciaran', 'Golden';
+EXEC AddLecturer 'Amber', 'Dixon';
+EXEC AddLecturer 'Nelle', 'Macdonald';
+EXEC AddLecturer 'Brenden', 'Hartman';
+EXEC AddLecturer 'Bryar', 'Hartman';
+EXEC AddLecturer 'Brynn', 'Washington';
+EXEC AddLecturer 'MacKenzie', 'Carver';
+EXEC AddLecturer 'Ariel', 'Houston';
+EXEC AddLecturer 'Cain', 'Vaughn';
+EXEC AddLecturer 'Jakeem', 'Atkinson';
+EXEC AddLecturer 'Dale', 'Travis';
+EXEC AddLecturer 'Haley', 'Guerrero';
+EXEC AddLecturer 'Zenia', 'Preston';
+EXEC AddLecturer 'Miriam', 'Armstrong';
+EXEC AddLecturer 'Dillon', 'James';
+EXEC AddLecturer 'Emerald', 'Graham';
+EXEC AddLecturer 'Evelyn', 'Cole';
+EXEC AddLecturer 'Plato', 'Obrien';
+EXEC AddLecturer 'Cooper', 'Mccarty';
+EXEC AddLecturer 'Hadassah', 'Jackson';
+EXEC AddLecturer 'Yuli', 'Shields';
+EXEC AddLecturer 'August', 'Newman';
+EXEC AddLecturer 'Inga', 'Benton';
+EXEC AddLecturer 'Andrew', 'Coleman';
+EXEC AddLecturer 'Martena', 'Chang';
+EXEC AddLecturer 'Kevin', 'Justice';
+EXEC AddLecturer 'Axel', 'Carlson';
+EXEC AddLecturer 'Jeanette', 'Vance';
+EXEC AddLecturer 'Marsden', 'Hutchinson';
+EXEC AddLecturer 'Quyn', 'Langley';
+EXEC AddLecturer 'Jolene', 'Carrillo';
+EXEC AddLecturer 'Jin', 'Moon';
+EXEC AddLecturer 'Jack', 'Simon';
+EXEC AddLecturer 'Francis', 'Ortega';
+EXEC AddLecturer 'Jillian', 'Wagner';
+EXEC AddLecturer 'Knox', 'Gill';
+EXEC AddLecturer 'Phyllis', 'Estes';
+EXEC AddLecturer 'Xanthus', 'Hoover';
+EXEC AddLecturer 'Florence', 'Henson';
+EXEC AddLecturer 'Quinn', 'Bennett';
+EXEC AddLecturer 'Yoshio', 'Matthews';
+EXEC AddLecturer 'Preston', 'Foster';
+EXEC AddLecturer 'Gannon', 'Knapp';
+EXEC AddLecturer 'Thane', 'Curtis';
+EXEC AddLecturer 'Wallace', 'Mosley';
+EXEC AddLecturer 'Gary', 'Mccullough';
+EXEC AddLecturer 'Cain', 'Osborne';
+EXEC AddLecturer 'Charissa', 'Meadows';
+EXEC AddLecturer 'Indigo', 'Cabrera';
+EXEC AddLecturer 'Silas', 'Ratliff';
+EXEC AddLecturer 'Clark', 'Cameron';
+EXEC AddLecturer 'Patrick', 'Woodward';
+EXEC AddLecturer 'Zorita', 'Buck';
+EXEC AddLecturer 'Deborah', 'Blevins';
+EXEC AddLecturer 'John', 'Walls';
+EXEC AddLecturer 'Calvin', 'Long';
+EXEC AddLecturer 'Kylan', 'Hudson';
+EXEC AddLecturer 'Cole', 'Scott';
+EXEC AddLecturer 'Randall', 'Smith';
+EXEC AddLecturer 'Castor', 'Flowers';
+EXEC AddLecturer 'Pandora', 'Hatfield';
+EXEC AddLecturer 'Chandler', 'Delgado';
+EXEC AddLecturer 'Paki', 'Dunlap';
+EXEC AddLecturer 'Patience', 'Villarreal';
+EXEC AddLecturer 'Todd', 'Booker';
+EXEC AddLecturer 'Kylie', 'Barker';
+EXEC AddLecturer 'Kevyn', 'Grimes';
+EXEC AddLecturer 'Brock', 'Kim';
+EXEC AddLecturer 'Tasha', 'Wilson';
+EXEC AddLecturer 'Ruby', 'Pacheco';
+EXEC AddLecturer 'Wanda', 'Nguyen';
+EXEC AddLecturer 'Orla', 'Farmer';
+EXEC AddLecturer 'Melissa', 'Ellis';
+EXEC AddLecturer 'Chaim', 'Clarke';
+EXEC AddLecturer 'Camden', 'Pena';
+EXEC AddLecturer 'Kato', 'Donovan';
+EXEC AddLecturer 'Kylie', 'Lopez';
+EXEC AddLecturer 'Quemby', 'Wiley';
+EXEC AddLecturer 'Neil', 'Brewer';
+EXEC AddLecturer 'Amethyst', 'Dominguez';
+EXEC AddLecturer 'Declan', 'Norton';
+EXEC AddLecturer 'Bethany', 'Hunt';
+EXEC AddLecturer 'Kasimir', 'Chang';
+EXEC AddLecturer 'Sybil', 'Rollins';
+EXEC AddLecturer 'Joy', 'Mueller';
+EXEC AddLecturer 'Candice', 'Whitaker';
+EXEC AddLecturer 'Vladimir', 'Mckenzie';
+EXEC AddLecturer 'Alexis', 'Guy';
+EXEC AddLecturer 'Keith', 'Hubbard';
+EXEC AddLecturer 'James', 'Dennis';
+EXEC AddLecturer 'Madaline', 'Meyer';
+EXEC AddLecturer 'Cassidy', 'Clemons';
+EXEC AddLecturer 'Graham', 'Carson';
+EXEC AddLecturer 'Joseph', 'House';
+EXEC AddLecturer 'Caldwell', 'Cherry';
+EXEC AddLecturer 'Madonna', 'Marsh';
+EXEC AddLecturer 'Patience', 'Patterson';
+EXEC AddLecturer 'Miriam', 'Lindsay';
+EXEC AddLecturer 'Tana', 'Glenn';
+EXEC AddLecturer 'Hyacinth', 'Trujillo';
+EXEC AddLecturer 'Lacey', 'Montgomery';
+EXEC AddLecturer 'Sydnee', 'Harris';
+EXEC AddLecturer 'Justine', 'Bailey';
+EXEC AddLecturer 'Hanae', 'Watkins';
+EXEC AddLecturer 'Octavius', 'Daugherty';
+EXEC AddLecturer 'Ezra', 'Russell';
+EXEC AddLecturer 'Ralph', 'Lynch';
+EXEC AddLecturer 'Ava', 'Welch';
+EXEC AddLecturer 'Brenden', 'Tanner';
+EXEC AddLecturer 'Caleb', 'Randall';
+EXEC AddLecturer 'Paul', 'Branch';
+EXEC AddLecturer 'Bert', 'Delaney';
+EXEC AddLecturer 'Macey', 'Wolfe';
+EXEC AddLecturer 'Zena', 'Pruitt';
+EXEC AddLecturer 'Benjamin', 'Davis';
+EXEC AddLecturer 'Ivan', 'Faulkner';
+EXEC AddLecturer 'Omar', 'Hart';
+EXEC AddLecturer 'Henry', 'Dominguez';
+EXEC AddLecturer 'Dante', 'Bailey';
+EXEC AddLecturer 'Jade', 'Matthews';
+EXEC AddLecturer 'Bruno', 'Mercer';
+EXEC AddLecturer 'Hunter', 'Barnett';
+EXEC AddLecturer 'Sebastian', 'Mcfadden';
+EXEC AddLecturer 'Porter', 'Bernard';
+EXEC AddLecturer 'Jermaine', 'Cobb';
+EXEC AddLecturer 'Michael', 'Juarez';
+EXEC AddLecturer 'Lee', 'Reid';
+EXEC AddLecturer 'Tarik', 'Compton';
+EXEC AddLecturer 'Justina', 'Griffith';
+EXEC AddLecturer 'Susan', 'Zamora';
+EXEC AddLecturer 'Leroy', 'Potts';
+EXEC AddLecturer 'Fredericka', 'Mcbride';
+EXEC AddLecturer 'Rigel', 'Rios';
+EXEC AddLecturer 'Noelle', 'Dillard';
+EXEC AddLecturer 'Ebony', 'Fletcher';
+EXEC AddLecturer 'Cain', 'Lucas';
+EXEC AddLecturer 'Brody', 'Fitzgerald';
+EXEC AddLecturer 'Hakeem', 'Fleming';
+EXEC AddLecturer 'Rosalyn', 'Casey';
+EXEC AddLecturer 'Karleigh', 'Ashley';
+EXEC AddLecturer 'Anthony', 'Harrington';
+EXEC AddLecturer 'Risa', 'Buchanan';
+EXEC AddLecturer 'Fleur', 'Burris';
+EXEC AddLecturer 'Geoffrey', 'Spence';
+EXEC AddLecturer 'Todd', 'Porter';
+EXEC AddLecturer 'Denise', 'Stevenson';
+EXEC AddLecturer 'Tate', 'Church';
+EXEC AddLecturer 'Rina', 'Caldwell';
+EXEC AddLecturer 'Wallace', 'Mays';
+EXEC AddLecturer 'Chase', 'Cabrera';
+EXEC AddLecturer 'Shelby', 'Potts';
