@@ -1,10 +1,10 @@
-(1,'Informatyka 1'),
-(2,'Informatyka 1'),
-(3,'Informatyka 2'),
-(4,'Informatyka 2'),
-(5,'Matematyka'),
-(6,'Matematyka'),
-(7,'Biologia'),
-(8,'Biologia'),
-(9,'Studia Data Science'),
-(10,'Studia Data Science');
+EXEC AddSyllabus 'Informatyka 1';
+EXEC AddSyllabus 'Informatyka 2';
+EXEC AddSyllabus 'Matematyka';
+EXEC AddSyllabus 'Biologia';
+EXEC AddSyllabus 'Studia Data Science 1';
+EXEC AddSyllabus 'Studia Data Science 2';
+EXEC AddSyllabus 'Studia Data Science 3';
+EXEC AddSyllabus 'Matematyka 2';
+EXEC AddSyllabus 'Chemia 1 stopnia';
+EXEC AddSyllabus 'Chemia 2 stopnia';

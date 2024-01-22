@@ -950,7 +950,123 @@ from
 ### 6. Raport bilokacji: lista osób, które są zapisane na co najmniej dwa przyszłe szkolenia, które ze sobą kolidują czasowo.
 
 ```sql
--- empty
+CREATE VIEW BilocationReport AS
+SELECT
+    c.CustomerID,
+    c.FirstName,
+    c.LastName,
+    t1.ServiceID AS Service1ID,
+    t1.ServiceType AS Service1Type,
+    t1.StartDate AS Service1StartDate,
+    t1.EndDate AS Service1EndDate,
+    t2.ServiceID AS Service2ID,
+    t2.ServiceType AS Service2Type,
+    t2.StartDate AS Service2StartDate,
+    t2.EndDate AS Service2EndDate
+FROM
+    Customers c
+    JOIN (
+        SELECT
+            Lectures_attendance.CustomerID,
+            Lectures.ServiceID AS ServiceID,
+            'Studies' AS ServiceType,
+            Lectures.StartDate,
+            Lectures.EndDate
+        FROM Studies
+		join Lectures on Lectures.ServiceID = Studies.ServiceID
+		join Lectures_attendance on Lectures.LectureID = Lectures_attendance.LectureID
+        WHERE Lectures.EndDate > GETDATE()
+
+        UNION
+
+        SELECT
+            la.CustomerID,
+            lh.ServiceID AS ServiceID,
+            'Single_Studies' AS ServiceType,
+            lh.StartDate,
+            lh.EndDate
+        FROM Lectures_attendance la
+        INNER JOIN Lectures lh ON la.LectureID = lh.LectureID
+        WHERE lh.EndDate > GETDATE()
+
+        UNION 
+
+        SELECT
+            wa.CustomerID,
+            wh.ServiceID AS ServiceID,
+            'Webinars' AS ServiceType,
+            wh.StartDate,
+            wh.EndDate
+        FROM Webinars_attendance wa
+        JOIN Webinars_hist wh ON wa.WebinarID = wh.WebinarID
+        WHERE wh.EndDate > GETDATE()
+
+        UNION 
+
+        SELECT
+            Courses_attendance.CustomerID,
+            Modules.ServiceID AS ServiceID,
+            'Courses' AS ServiceType,
+            Courses_hist.StartDate,
+            Courses_hist.EndDate
+        FROM Courses_attendance
+        JOIN Courses_hist ON Courses_attendance.ClassID = Courses_hist.ClassID
+		join Modules on Modules.ModuleID = Courses_hist.ModuleID
+        WHERE Courses_hist.EndDate > GETDATE()
+    ) t1 ON c.CustomerID = t1.CustomerID
+
+    JOIN (
+        SELECT
+            Lectures_attendance.CustomerID,
+            Lectures.ServiceID AS ServiceID,
+            'Studies' AS ServiceType,
+            Lectures.StartDate,
+            Lectures.EndDate
+        FROM Studies
+		join Lectures on Lectures.ServiceID = Studies.ServiceID
+		join Lectures_attendance on Lectures.LectureID = Lectures_attendance.LectureID
+        WHERE Lectures.EndDate > GETDATE()
+
+        UNION ALL
+
+        SELECT
+            la.CustomerID,
+            lh.ServiceID AS ServiceID,
+            'Single_Studies' AS ServiceType,
+            lh.StartDate,
+            lh.EndDate
+        FROM Lectures_attendance la
+        INNER JOIN Lectures lh ON la.LectureID = lh.LectureID
+        WHERE lh.EndDate > GETDATE()
+
+        UNION ALL
+
+        SELECT
+            wa.CustomerID,
+            wh.ServiceID AS ServiceID,
+            'Webinars' AS ServiceType,
+            wh.StartDate,
+            wh.EndDate
+        FROM Webinars_attendance wa
+        INNER JOIN Webinars_hist wh ON wa.WebinarID = wh.WebinarID
+        WHERE wh.EndDate > GETDATE()
+
+        UNION ALL
+
+        SELECT
+            ca.CustomerID,
+            Modules.ServiceID AS ServiceID,
+            'Courses' AS ServiceType,
+            Courses_hist.StartDate,
+            Courses_hist.EndDate
+        FROM Courses_attendance ca
+        INNER JOIN Courses_hist ON ca.ClassID = Courses_hist.ClassID
+		join Modules on Modules.ModuleID = Courses_hist.ModuleID
+        WHERE Courses_hist.EndDate > GETDATE()
+    ) t2 ON c.CustomerID = t2.CustomerID
+    AND t1.ServiceID < t2.ServiceID
+    AND t1.EndDate > t2.StartDate
+    AND t1.StartDate < t2.EndDate;
 ```
 
 ## 6. Funkcje <a name="funkcje"></a>
