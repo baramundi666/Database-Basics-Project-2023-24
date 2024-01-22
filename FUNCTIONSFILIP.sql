@@ -307,3 +307,107 @@ BEGIN
 
     RETURN @Attendance;
 END;
+
+
+CREATE FUNCTION LecturesAttendanceCheckIntegrity
+(
+    @CustomerID INT,
+    @LectureID INT
+)
+RETURNS INT
+AS
+BEGIN
+    DECLARE @Studies INT;
+    DECLARE @SingleStudies INT;
+
+    -- Get the Studies service ID connected to the Lecture
+    SELECT @Studies = ServiceID
+    FROM Lectures
+    WHERE LectureID = @LectureID;
+
+    -- Get the SingleStudies service ID if it exists
+    SELECT @SingleStudies = ServiceID
+    FROM Single_Studies
+    WHERE LectureID = @LectureID;
+
+    -- Check if there is an OrderDetails record for Studies or SingleStudies
+    IF EXISTS (
+        SELECT 1
+        FROM Order_details od
+		join orders o
+		on od.OrderID = o.OrderID
+        WHERE o.CustomerID = @CustomerID
+          AND (od.ServiceID = @Studies OR od.ServiceID = @SingleStudies)
+    )
+    BEGIN
+        -- Return 1 if there is a matching record
+        RETURN 1;
+    END
+  
+        RETURN 0;
+
+END;
+
+CREATE FUNCTION InternshipsIntegrity
+(
+    @InternshipID INT,
+    @CustomerID INT
+)
+RETURNS INT
+AS
+BEGIN
+    DECLARE @Studies INT;
+
+    SELECT @Studies = ServiceID
+    FROM Internships
+    WHERE InternshipID = @InternshipID;
+
+    IF EXISTS (
+        SELECT 1
+        FROM Order_Details od
+		join Orders o
+		ON o.OrderID = od.OrderID
+        WHERE od.ServiceID = @Studies
+          AND o.CustomerID = @CustomerID
+    )
+    BEGIN
+        RETURN 1;
+    END
+        RETURN 0;
+
+END;
+
+
+CREATE FUNCTION CoursesIntegrity
+(
+    @ClassID INT,
+    @CustomerID INT
+)
+RETURNS INT
+AS
+BEGIN
+    DECLARE @Course INT;
+
+    SELECT @Course = m.ServiceID
+    FROM Courses_hist ch 
+	join Modules m
+	on ch.ModuleID = m.ModuleID
+    WHERE ch.ClassID = @ClassID;
+	IF @Course % 4 <> 3
+	BEGIN
+		RETURN 0;
+	END;
+    IF EXISTS (
+        SELECT 1
+        FROM Order_Details od
+		join Orders o
+		ON o.OrderID = od.OrderID
+        WHERE od.ServiceID = @Course
+          AND o.CustomerID = @CustomerID
+    )
+    BEGIN
+        RETURN 1;
+    END
+        RETURN 0;
+
+END;
