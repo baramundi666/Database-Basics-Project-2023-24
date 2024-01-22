@@ -754,172 +754,241 @@ group by
 ### 2. Lista „dłużników” – osoby, które skorzystały z usług, ale nie uiściły opłat.
 
 ```sql
-Create view dbo.DebtorsList as (
-select FirstName, LastName, Balance
-from Customers
-where Balance < 0 and CustomerID in(
-select Customers.CustomerID
-from Customers
-join Orders 
-on Customers.CustomerID = Orders.CustomerID
-join Order_Details 
-on Orders.OrderID = Order_Details.OrderID
-join Services 
-on Order_Details.ServiceID = Services.ServiceID
-join Studies 
-on Services.ServiceID = Studies.ServiceID
-where Studies.StartDate < GETDATE()
-group by Customers.CustomerID
+Create view dbo.DebtorsList as 
+select 
+	FirstName,
+	LastName,
+	Balance
+from 
+	Customers
+where 
+	Balance < 0 and CustomerID 
+	in(
+		select 
+			Customers.CustomerID
+		from 
+			Customers
+			join Orders on Customers.CustomerID = Orders.CustomerID
+			join Order_Details on Orders.OrderID = Order_Details.OrderID
+			join Services on Order_Details.ServiceID = Services.ServiceID
+			join Studies on Services.ServiceID = Studies.ServiceID
+		where 
+			Studies.StartDate < GETDATE()
+		group by 
+			Customers.CustomerID
 
-union
+		union
 
-select Customers.CustomerID
-from Customers
-join Orders 
-on Customers.CustomerID = Orders.CustomerID
-join Order_Details 
-on Orders.OrderID = Order_Details.OrderID
-join Services 
-on Order_Details.ServiceID = Services.ServiceID
-join Single_studies 
-on Services.ServiceID = Single_studies.ServiceID
-join Lectures 
-on Lectures.LectureID = Single_studies.LectureID
-where Lectures.StartDate < GETDATE()
-group by Customers.CustomerID
+		select 
+			Customers.CustomerID
+		from 
+			Customers
+			join Orders on Customers.CustomerID = Orders.CustomerID
+			join Order_Details on Orders.OrderID = Order_Details.OrderID
+			join Services on Order_Details.ServiceID = Services.ServiceID
+			join Single_studies on Services.ServiceID = Single_studies.ServiceID
+			join Lectures on Lectures.LectureID = Single_studies.LectureID
+		where 
+			Lectures.StartDate < GETDATE()
+		group by 
+			Customers.CustomerID
 
-union
+		union
 
-select Customers.CustomerID
-from Customers
-join Orders 
-on Customers.CustomerID = Orders.CustomerID
-join Order_Details 
-on Orders.OrderID = Order_Details.OrderID
-join Services 
-on Order_Details.ServiceID = Services.ServiceID
-join Webinars 
-on Webinars.ServiceID = Services.ServiceID
-where Webinars.StartDate < GETDATE()
-group by Customers.CustomerID
+		select 
+			Customers.CustomerID
+		from 
+			Customers
+			join Orders on Customers.CustomerID = Orders.CustomerID
+			join Order_Details on Orders.OrderID = Order_Details.OrderID
+			join Services on Order_Details.ServiceID = Services.ServiceID
+			join Webinars on Webinars.ServiceID = Services.ServiceID
+		where 
+			Webinars.StartDate < GETDATE()
+		group by 
+			Customers.CustomerID
 
-union
+		union
 
-select Customers.CustomerID
-from Customers
-join Orders 
-on Customers.CustomerID = Orders.CustomerID
-join Order_Details 
-on Orders.OrderID = Order_Details.OrderID
-join Services 
-on Order_Details.ServiceID = Services.ServiceID
-join Courses 
-on Services.ServiceID = Courses.ServiceID
-where Courses.StartDate < GETDATE()
-group by Customers.CustomerID)
-group by FirstName, LastName, Balance)
+		select 
+			Customers.CustomerID
+		from 
+			Customers
+			join Orders on Customers.CustomerID = Orders.CustomerID
+			join Order_Details on Orders.OrderID = Order_Details.OrderID
+			join Services on Order_Details.ServiceID = Services.ServiceID
+			join Courses on Services.ServiceID = Courses.ServiceID
+		where 
+			Courses.StartDate < GETDATE()
+		group by 
+			Customers.CustomerID)
+		group by 
+			FirstName, LastName, Balance;
 ```
 
 
 ### 3. Ogólny raport dotyczący liczby zapisanych osób na przyszłe wydarzenia (z informacją, czy wydarzenie jest stacjonarnie, czy zdalnie).
 
 ```sql
-Create view dbo.FutureEventsAttendance as(
-select Lectures.ServiceID,Lectures.LecturerID,Lectures.Type as Typ, Lectures.StartDate,  count(Customers.CustomerID) as Liczba_Zapisanych_Osób
-from Customers
-join Orders 
-on Customers.CustomerID = Orders.CustomerID
-join Order_Details 
-on Orders.OrderID = Order_Details.OrderID
-join Services 
-on Order_Details.ServiceID = Services.ServiceID
-join Studies 
-on Studies.ServiceID = Services.ServiceID
-join Lectures 
-on Lectures.ServiceID = Studies.ServiceID
-where Lectures.StartDate > GETDATE()
-group by Lectures.ServiceID,Lectures.LecturerID,Lectures.Type, Lectures.StartDate
+Create view dbo.FutureEventsAttendance as
+select 
+	Lectures.ServiceID,
+	Lectures.LecturerID,
+	Lectures.Type as Typ,
+	Lectures.StartDate,
+	count(Customers.CustomerID) as Liczba_Zapisanych_Osób
+from 
+	Customers
+	join Orders on Customers.CustomerID = Orders.CustomerID
+	join Order_Details on Orders.OrderID = Order_Details.OrderID
+	join Services on Order_Details.ServiceID = Services.ServiceID
+	join Studies on Studies.ServiceID = Services.ServiceID
+	join Lectures on Lectures.ServiceID = Studies.ServiceID
+where 
+	Lectures.StartDate > GETDATE()
+group by 
+	Lectures.ServiceID,
+	Lectures.LecturerID,
+	Lectures.Type,
+	Lectures.StartDate
 
 union
 
-select Lectures.ServiceID,Lectures.LecturerID,Single_Studies.Type as Typ, Lectures.StartDate,  count(Customers.CustomerID) as Liczba_Zapisanych_Osób
-from Customers
-join Orders 
-on Customers.CustomerID = Orders.CustomerID
-join Order_Details 
-on Orders.OrderID = Order_Details.OrderID
-join Services 
-on Order_Details.ServiceID = Services.ServiceID
-join Single_studies 
-on Single_studies.ServiceID = Services.ServiceID
-join Lectures 
-on Lectures.ServiceID = Single_studies.ServiceID
-where Lectures.StartDate > GETDATE()
-group by Lectures.ServiceID,Lectures.LecturerID,Single_Studies.Type, Lectures.StartDate
+select 
+	Lectures.ServiceID,
+	Lectures.LecturerID,
+	Lectures.Type as Typ,
+	Lectures.StartDate,
+	count(Customers.CustomerID) as Liczba_Zapisanych_Osób
+from 
+	Customers
+	join Orders on Customers.CustomerID = Orders.CustomerID
+	join Order_Details on Orders.OrderID = Order_Details.OrderID
+	join Services on Order_Details.ServiceID = Services.ServiceID
+	join Single_studies on Single_studies.ServiceID = Services.ServiceID
+	join Lectures on Lectures.ServiceID = Single_studies.ServiceID
+where 
+	Lectures.StartDate > GETDATE()
+group by 
+	Lectures.ServiceID,
+	Lectures.LecturerID,
+	Lectures.Type,
+	Lectures.StartDate
 
 union
 
-select Webinars_hist.ServiceID,Webinars_hist.LecturerID, 'Zdalnie' as Typ, Webinars_hist.StartDate,  count(Customers.CustomerID) as Liczba_Zapisanych_Osób
-from Customers
-join Orders 
-on Customers.CustomerID = Orders.CustomerID
-join Order_Details 
-on Orders.OrderID = Order_Details.OrderID
-join Services 
-on Order_Details.ServiceID = Services.ServiceID
-join Webinars 
-on Webinars.ServiceID = Services.ServiceID
-join Webinars_hist 
-on Webinars_hist.ServiceID = Webinars.ServiceID
-where Webinars_hist.StartDate > GETDATE()
-group by Webinars_hist.ServiceID, Webinars_hist.LecturerID, Webinars_hist.StartDate
+select 
+	Webinars_hist.ServiceID,
+	Webinars_hist.LecturerID,
+	'Zdalnie' as Typ,
+	Webinars_hist.StartDate,
+	count(Customers.CustomerID) as Liczba_Zapisanych_Osób
+from 
+	Customers
+	join Orders on Customers.CustomerID = Orders.CustomerID
+	join Order_Details on Orders.OrderID = Order_Details.OrderID
+	join Services on Order_Details.ServiceID = Services.ServiceID
+	join Webinars on Webinars.ServiceID = Services.ServiceID
+	join Webinars_hist on Webinars_hist.ServiceID = Webinars.ServiceID
+where 
+	Webinars_hist.StartDate > GETDATE()
+group by 
+	Webinars_hist.ServiceID,
+	Webinars_hist.LecturerID,
+	Webinars_hist.StartDate
 
 
 union
 
-select Courses_hist.ClassID,Courses_hist.LecturerID, Courses.Type as Typ, Courses_hist.StartDate,  count(Customers.CustomerID) as Liczba_Zapisanych_Osób
-from Customers
-join Orders 
-on Customers.CustomerID = Orders.CustomerID
-join Order_Details 
-on Orders.OrderID = Order_Details.OrderID
-join Services 
-on Order_Details.ServiceID = Services.ServiceID
-join Courses 
-on Courses.ServiceID = Services.ServiceID
-join Modules 
-on Modules.ServiceID = Courses.ServiceID
-join Courses_hist 
-on Courses_hist.ModuleID = Modules.ModuleID
-where Courses_hist.StartDate > GETDATE()
-group by Courses_hist.ClassID,Courses_hist.LecturerID, Courses.Type,  Courses_hist.StartDate)
+select 
+	Courses_hist.ClassID,
+	Courses_hist.LecturerID, 
+	Courses.Type as Typ, 
+	Courses_hist.StartDate,
+	count(Customers.CustomerID) as Liczba_Zapisanych_Osób
+from 
+	Customers
+	join Orders on Customers.CustomerID = Orders.CustomerID
+	join Order_Details on Orders.OrderID = Order_Details.OrderID
+	join Services on Order_Details.ServiceID = Services.ServiceID
+	join Courses on Courses.ServiceID = Services.ServiceID
+	join Modules on Modules.ServiceID = Courses.ServiceID
+	join Courses_hist on Courses_hist.ModuleID = Modules.ModuleID
+where 
+	Courses_hist.StartDate > GETDATE()
+group by 
+	Courses_hist.ClassID,
+	Courses_hist.LecturerID,
+	Courses.Type,
+	Courses_hist.StartDate;
 ```
 
 ### 4. Ogólny raport dotyczący frekwencji na zakończonych już wydarzeniach.
 
 ```sql
--- empty
+create view dbo.AttendanceRaport as
+select
+    ServiceType,
+    EventID,
+    CustomerID,
+    Attendance
+from
+    (
+        select
+            'Lecture' as ServiceType,
+            Lectures_attendance.LectureID as EventID,
+            Lectures_attendance.CustomerID,
+            Lectures_attendance.Attendance
+        from
+            Lectures_attendance
+            join Lectures on Lectures_attendance.LectureID = Lectures.LectureID
+        where
+            Lectures.EndDate <= getdate()
+
+        union 
+
+        select
+            'Webinar' as ServiceType,
+            Webinars_attendance.WebinarID as EventID,
+            Webinars_attendance.CustomerID,
+            Webinars_attendance.attendance
+        from
+            Webinars_attendance
+            join Webinars_hist on Webinars_attendance.WebinarID = Webinars_hist.WebinarID
+        where
+            Webinars_hist.EndDate <= getdate()
+
+        union
+
+        select
+            'Course' as ServiceType,
+            Courses_attendance.ClassID as EventID,
+            Courses_attendance.CustomerID,
+            Courses_attendance.Attendance
+        from
+            Courses_attendance
+            join Courses_hist on Courses_attendance.ClassID = Courses_hist.ClassID
+        where
+            Courses_hist.EndDate <= getdate()
+    ) AttendanceRaport;
 ```
 
 ### 5. Lista obecności dla każdego szkolenia z datą, imieniem, nazwiskiem i informacją czy uczestnik był obecny, czy nie.
 
 ```sql
-create view AttendanceList as
+create view dbo.AttendanceList as
 select
     'Studies' as ServiceType,
     Studies.ServiceID as ServiceID,
     Lectures.StartDate as Date,
-    c.FirstName,
-    c.LastName,
+    Customers.FirstName,
+    Customers.LastName,
     Lectures_attendance.Attendance as AttendanceStatus
 from
     Studies
-    join Lectures 
-    on Studies.ServiceID = Lectures.ServiceID
-    join Lectures_attendance 
-    on Lectures.LectureID = Lectures_attendance.LectureID
-    join Customers c 
-    on Lectures_attendance.CustomerID = c.CustomerID
+    join Lectures on Studies.ServiceID = Lectures.ServiceID
+    join Lectures_attendance on Lectures.LectureID = Lectures_attendance.LectureID
+    join Customers on Lectures_attendance.CustomerID = Customers.CustomerID
 
 union 
 
@@ -932,30 +1001,24 @@ select
     Lectures_attendance.Attendance as AttendanceStatus
 from
     Single_Studies 
-    join Lectures 
-    on Single_Studies.LectureID = Lectures.LectureID
-    join Lectures_attendance 
-    on Lectures.LectureID = Lectures_attendance.LectureID
-    join Customers 
-    on Lectures_attendance.CustomerID = Customers.CustomerID
+    join Lectures on Single_Studies.LectureID = Lectures.LectureID
+    join Lectures_attendance on Lectures.LectureID = Lectures_attendance.LectureID
+    join Customers on Lectures_attendance.CustomerID = Customers.CustomerID
 
 union 
 
 select
     'Webinars' as ServiceType,
-    w.ServiceID as ServiceID,
+    Webinars.ServiceID as ServiceID,
     Webinars_hist.StartDate as Date,
-    c.FirstName,
-    c.LastName,
+    Customers.FirstName,
+    Customers.LastName,
     Webinars_attendance.Attendance as AttendanceStatus
 from
-    Webinars w
-    join Webinars_hist Webinars_hist 
-    on w.ServiceID = Webinars_hist.ServiceID
-    join Webinars_attendance Webinars_attendance 
-    on Webinars_hist.WebinarID = Webinars_attendance.WebinarID
-    join Customers c 
-    on Webinars_attendance.CustomerID = c.CustomerID
+    Webinars
+    join Webinars_hist Webinars_hist on Webinars.ServiceID = Webinars_hist.ServiceID
+    join Webinars_attendance Webinars_attendance on Webinars_hist.WebinarID = Webinars_attendance.WebinarID
+    join Customers on Webinars_attendance.CustomerID = Customers.CustomerID
 
 union
 
@@ -968,14 +1031,10 @@ select
     Courses_attendance.Attendance as AttendanceStatus
 from
     Courses
-	join Modules 
-    on Courses.ServiceID = Modules.ServiceID
-    join Courses_hist 
-    on Courses.ServiceID = Modules.ServiceID
-    join Courses_attendance 
-    on Courses_hist.ClassID = Courses_attendance.ClassID
-    join Customers 
-    on Courses_attendance.CustomerID = Customers.CustomerID;
+	join Modules on Courses.ServiceID = Modules.ServiceID
+    join Courses_hist on Courses.ServiceID = Modules.ServiceID
+    join Courses_attendance on Courses_hist.ClassID = Courses_attendance.ClassID
+    join Customers on Courses_attendance.CustomerID = Customers.CustomerID;
 ```
 
 ## 6. Funkcje <a name="funkcje"></a>
@@ -1017,31 +1076,31 @@ RETURN (
 		WHERE o.CustomerID = @CustomerID
 	)
 
-	SELECT t1.ServiceID, l.LectureID, l.Date
+	SELECT t1.ServiceID, l.LectureID, l.StartDate
 	FROM t1
 	JOIN Studies s ON t1.ServiceID = s.ServiceID
 	JOIN Lectures l ON s.ServiceID = l.ServiceID
-	WHERE l.Date > GETDATE()
+	WHERE l.StartDate > GETDATE()
 
 	UNION
 
-	SELECT t1.ServiceID, w.ServiceID, w.Date
+	SELECT t1.ServiceID, w.ServiceID, w.StartDate
 	FROM t1
 	JOIN Webinars w ON t1.ServiceID = w.ServiceID
-	WHERE w.Date > GETDATE()
+	WHERE w.StartDate > GETDATE()
 
 	UNION
 
-	SELECT t1.ServiceID, m.ModuleID, ch.Date
+	SELECT t1.ServiceID, m.ModuleID, ch.StartDate
 	FROM t1
 	JOIN Courses c ON t1.ServiceID = c.ServiceID
 	JOIN Modules m ON c.ServiceID = m.ServiceID
 	JOIN Courses_hist ch ON m.ModuleID = ch.ModuleID
-	WHERE ch.Date > GETDATE()
+	WHERE ch.StartDate > GETDATE()
 );
 ```
 
-### 4. Sprawdza czy zajęcia kursu mieści się w ramach czasowych kursu
+### 4. Sprawdza czy zajęcia kursu mieszczą się w ramach czasowych kursu
 
 ```sql
 CREATE FUNCTION CheckClassDates
@@ -1309,6 +1368,42 @@ BEGIN
   
         RETURN 0;
 
+END;
+```
+
+### 12. Funkcja zwracająca wszystkie dyplomy dla danego użytkownika
+
+```sql
+CREATE FUNCTION GetDiplomasForCustomer
+	(@CustomerID INT)
+RETURNS TABLE
+AS
+RETURN
+(
+    SELECT D.*
+    FROM Diplomas AS D
+    WHERE D.CustomerID = @CustomerID
+);
+```
+
+### 13. Funkcja sprawdzająca czy podany kursant pojawił się na podanym wykładzie
+
+```sql
+CREATE FUNCTION CheckCustomerAttendance
+(
+    @CustomerID INT,
+    @LectureID INT
+)
+RETURNS BIT
+AS
+BEGIN
+    DECLARE @Attendance BIT;
+
+    SELECT @Attendance = CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
+    FROM Lectures_attendance
+    WHERE CustomerID = @CustomerID AND LectureID = @LectureID;
+
+    RETURN @Attendance;
 END;
 ```
 
@@ -2168,26 +2263,200 @@ BEGIN
 END;
 ```
 
-### 22. tbd
+### 22. Zapisanie obecności użytkownika na wykładzie 
 
 ```sql
+CREATE PROCEDURE UpdateLectureAttendance
+    @CustomerID INT,
+    @LectureID INT,
+    @AttendanceStatus VARCHAR(10)
+AS
+BEGIN
+    BEGIN TRANSACTION;
 
+    BEGIN TRY
+
+        IF dbo.LecturesAttendanceCheckIntegrity(@CustomerID, @LectureID) = 0
+        BEGIN
+            THROW 50001, 'Invalid attendance data.', 1;
+        END
+
+       
+        INSERT INTO Lectures_attendance(CustomerID, LectureID, Attendance)
+        VALUES (@CustomerID, @LectureID, @AttendanceStatus);
+
+        COMMIT;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK;
+
+        THROW;
+    END CATCH;
+END;
 ```
 
-### 23. Dodanie przedmiotu do koszyka
+### 23. Wpisanie użytkownikowi zaliczenia stażu
 
 ```sql
+CREATE PROCEDURE UpdateInternshipPassed
+    @InternshipID INT,
+    @CustomerID INT,
+    @Passed NVARCHAR(3)  
+AS
+BEGIN
+    IF dbo.InternshipsIntegrity(@InternshipID, @CustomerID) = 0
+    BEGIN
+        THROW 50001, 'Integrity check failed. Record not found in Order_Details.', 1;
+    END
 
+    INSERT INTO Internships_passed (InternshipID, CustomerID, Passed)
+    VALUES (@InternshipID, @CustomerID, @Passed);
+END;
 ```
 
-### 24. Dodanie przedmiotu do koszyka
+### 24. Wpisanie użytkownikowi zaliczenia z egzaminu
 
 ```sql
+CREATE PROCEDURE UpdateExams
+    @ServiceID INT,
+    @CustomerID INT,
+    @Grade float(1)
+AS
+BEGIN
+	IF @ServiceID % 4 <> 2
+    BEGIN
+        THROW 50002, 'Invalid ServiceID for updating diploma.', 1;
+    END
+    IF NOT EXISTS (
+        SELECT 1
+        FROM Order_details od
+		join orders o 
+		on od.OrderID = o.OrderID
+        WHERE od.ServiceID = @ServiceID
+          AND o.CustomerID = @CustomerID
+    )
+    BEGIN
+        THROW 50001, 'No order record found for the specified service and customer.', 1;
+    END
 
+    INSERT INTO Exams (ServiceID, CustomerID, Grade)
+    VALUES (@ServiceID, @CustomerID, @Grade);
+END;
 ```
 
-### 25. Dodanie przedmiotu do koszyka
+### 25. Przyznanie użytkownikowi dyplomu ukończenia studiów
 
 ```sql
+CREATE PROCEDURE UpdateDiploma
+    @ServiceID INT,
+    @CustomerID INT,
+    @Date DATETIME,
+    @Title VARCHAR(255)
+AS
+BEGIN
+    IF @ServiceID % 4 <> 2
+    BEGIN
+        THROW 50002, 'Invalid ServiceID for updating diploma.', 1;
+    END
 
+    IF NOT EXISTS (
+        SELECT 1
+        FROM Order_details od
+		join orders o 
+		on o.orderid = od.orderid 
+        WHERE od.ServiceID = @ServiceID
+          AND o.CustomerID = @CustomerID
+    )
+    BEGIN
+        THROW 50001, 'No matching record in order_details found.', 1;
+    END
+
+    INSERT INTO Diplomas(ServiceID, CustomerID, Date, Title)
+    VALUES (@ServiceID, @CustomerID, @Date, @Title);
+END;
+```
+
+### 26. Zapisanie obecności użytkownika na zajęciach z kursu
+
+```sql
+CREATE PROCEDURE UpdateCoursesAttendance
+	@ClassID INT,
+	@CustomerID INT,
+	@Attendance varchar(10)
+AS
+BEGIN
+	Declare @ModuleID INT;
+	SELECT @ModuleID = m.ModuleID from Courses_hist m 
+	where m.ClassID =  @ClassID
+
+	IF dbo.CoursesIntegrity(@ClassID, @CustomerID)= 0 
+	BEGIN
+        THROW 50001, 'Integrity check failed. Record not found in Order_Details.', 1;
+    END
+	INSERT INTO Courses_attendance(ClassID, CustomerID, ModuleID, Attendance)
+    VALUES (@ClassID, @CustomerID,@ModuleID, @Attendance);
+END;
+```
+
+### 27. Zapisanie obecności użytkownika na webinarze
+
+```sql
+CREATE PROCEDURE UpdateWebinarsAttendance
+	@WebinarID  INT,
+	@CustomerID INT,
+	@Attendance varchar(10)
+AS
+BEGIN
+	Declare @ServiceID INT;
+	SELECT @ServiceID = w.serviceID from Webinars_hist w 
+	where w.WebinarID = @WebinarID
+	IF NOT EXISTS (
+        SELECT 1
+        FROM Order_details od
+		join orders o 
+		on o.orderid = od.orderid 
+        WHERE od.ServiceID = @ServiceID
+          AND o.CustomerID = @CustomerID
+    )
+    BEGIN
+		THROW 50001, 'No matching record in order_details found.', 1;
+    END
+
+	INSERT INTO Webinars_attendance(WebinarID, CustomerID, Attendance)
+	VALUES(@WebinarID,@CustomerID,@Attendance)
+END;
+```
+
+### 28. Odroczenie płatności klienta za usługę
+
+```sql
+CREATE PROCEDURE WaivePayment
+    @OrderID INT,
+    @Amount money
+AS
+BEGIN
+    Declare @RealWaive money, @PaymentAssesed money, @PaymentPaid money, @CustomerID INT;
+    SELECT @PaymentAssesed = PaymentAssesed from orders o
+    where o.OrderID = @OrderID
+    SELECT @PaymentPaid =  PaymentPaid from orders o 
+    where o.OrderID =  @OrderID 
+    Select @CustomerID = CustomerID from orders o
+    where o.OrderID =  @OrderID 
+    IF @PaymentAssesed - @PaymentPaid -  @Amount > 0
+    BEGIN
+        SET @RealWaive = @Amount 
+    END
+    IF @PaymentAssesed - @PaymentPaid - @Amount <= 0
+    BEGIN
+        SET @RealWaive = @PaymentAssesed - @PaymentPaid
+    END
+    UPDATE Customers
+    SET Balance =  Balance + @RealWaive
+    WHERE CustomerID =  @CustomerID
+
+    UPDATE Orders 
+    SET PaymentWaived = @RealWaive 
+    Where OrderID = @OrderID
+
+END;
 ```

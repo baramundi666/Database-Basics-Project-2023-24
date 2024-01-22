@@ -80,7 +80,7 @@ BEGIN
     FROM Internships_passed
     WHERE CustomerID = @CustomerID;
 
-    RETURN CASE WHEN @PassedStatus = 'Yes' THEN 1 ELSE 0; 
+    RETURN CASE WHEN @PassedStatus = 'Yes' THEN 1 ELSE 0 
 END;
 
 
@@ -112,4 +112,20 @@ BEGIN
     WHERE CustomerID = @CustomerID AND LectureID = @LectureID;
 
     RETURN @Attendance;
+END;
+
+CREATE FUNCTION CheckInternshipPassed
+(
+    @CustomerID INT
+)
+RETURNS BIT
+AS
+BEGIN
+    DECLARE @PassedStatus VARCHAR(3);
+
+    SELECT @PassedStatus = Passed
+    FROM Internships_passed
+    WHERE CustomerID = @CustomerID;
+
+    RETURN CASE WHEN @PassedStatus = 'Yes' THEN 1 ELSE 0 END;
 END;
