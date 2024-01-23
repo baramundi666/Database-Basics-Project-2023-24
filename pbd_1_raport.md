@@ -2286,6 +2286,15 @@ BEGIN
             ROLLBACK;
             RETURN;
         END
+		IF EXISTS(SELECT 1 from Order_details od 
+		join orders o 
+		on o.orderID = od.orderID
+		where od.ServiceID = @ServiceID and o.CustomerID = @CustomerID)
+        BEGIN
+            ROLLBACK;
+            RETURN;
+        END
+		
 
         DECLARE @Balance MONEY;
         SELECT @Balance = Balance FROM Customers WHERE CustomerID = @CustomerID;
