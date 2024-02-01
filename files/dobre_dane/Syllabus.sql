@@ -1,0 +1,10 @@
+EXEC AddSyllabus 'Informatyka 1';
+EXEC AddSyllabus 'Informatyka 2';
+EXEC AddSyllabus 'Matematyka';
+EXEC AddSyllabus 'Biologia';
+EXEC AddSyllabus 'Studia Data Science 1';
+EXEC AddSyllabus 'Studia Data Science 2';
+EXEC AddSyllabus 'Studia Data Science 3';
+EXEC AddSyllabus 'Matematyka 2';
+EXEC AddSyllabus 'Chemia 1 stopnia';
+EXEC AddSyllabus 'Chemia 2 stopnia';

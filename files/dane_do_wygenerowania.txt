@@ -1,0 +1,19 @@
+Customers 1
+Lecturers 1
+Translators 1
+
+Orders 1
+Languages 1
+
+Studies 1
+Webinars 1
+Courses 1 
+-> Modules 1
+
+Exams 1
+Internships 1
+Diplomas1
+
+Subjects 1
+Syllabus 1
+

@@ -1,0 +1,6 @@
+uzupelnic definicje tabel, (alter itd), 
+format sql zeby pomniejszyc czcionke, 
+transakcje w procedurach, 
+usunac orderby z funkcji, 
+sprawdzanie obecnosci, 
+tworzenie zamowienia, 

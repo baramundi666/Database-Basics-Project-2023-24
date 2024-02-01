@@ -1,0 +1,10 @@
+EXEC AddLanguage 'Russian';
+EXEC AddLanguage 'English';
+EXEC AddLanguage 'French';
+EXEC AddLanguage 'Spanish';
+EXEC AddLanguage 'Italian';
+EXEC AddLanguage 'Japanese';
+EXEC AddLanguage 'Chinese';
+EXEC AddLanguage 'German';
+EXEC AddLanguage 'Swedish';
+EXEC AddLanguage 'Mongolian';
