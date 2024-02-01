@@ -325,6 +325,8 @@ BEGIN
 
 END;
 
+go
+
 CREATE FUNCTION InternshipsIntegrity
 (
     @InternshipID INT,
@@ -354,6 +356,7 @@ BEGIN
 
 END;
 
+go
 
 CREATE FUNCTION CoursesIntegrity
 (

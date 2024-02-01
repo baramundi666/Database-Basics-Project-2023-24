@@ -397,7 +397,7 @@ from
 			Webinars_attendance
 			join Webinars_hist on Webinars_attendance.WebinarID = Webinars_hist.WebinarID
         where 
-			wh.EndDate > GETDATE()
+			Webinars_hist.EndDate > GETDATE()
 
         union 
 
@@ -413,7 +413,7 @@ from
 			join Modules on Modules.ModuleID = Courses_hist.ModuleID
         where
 			Courses_hist.EndDate > GETDATE()
-    ) t1 on c.CustomerID = t1.CustomerID
+    ) t1 on Customers.CustomerID = t1.CustomerID
 
     join (
         select
@@ -471,7 +471,7 @@ from
 			join Modules on Modules.ModuleID = Courses_hist.ModuleID
         where
 			Courses_hist.EndDate > GETDATE()
-    ) t2 on c.CustomerID = t2.CustomerID
+    ) t2 on Customers.CustomerID = t2.CustomerID
     and t1.ServiceID < t2.ServiceID
     and t1.EndDate >= t2.StartDate
     and t1.StartDate <= t2.EndDate;
